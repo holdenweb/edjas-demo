@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ name }} v{{ version }}</title>
+  <style>
+    body  { font-family: system-ui, sans-serif; margin: 2rem; color: #222; }
+    h1 small { color: #888; font-weight: normal; }
+    table { border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 0.4rem 0.8rem; text-align: left; }
+    th    { background: #f0f0f0; }
+  </style>
+</head>
+<body>
+
+  <!-- Two scalars pulled straight from the "Parameters" range -->
+  <h1>{{ name }} <small>v{{ version }}</small></h1>
+
+  <!-- board_data is the "scoreboard" range: first row = headings, the rest = data -->
+  {% set headings = board_data[0] %}
+  {% set rows = board_data[1:] %}
+  <table>
+    <tr>
+      {% for heading in headings %}<th>{{ heading }}</th>{% endfor %}
+    </tr>
+    {% for row in rows %}
+    <tr>
+      {% for value in row %}<td>{{ value }}</td>{% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+
+</body>
+</html>
