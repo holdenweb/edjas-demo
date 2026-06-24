@@ -1,0 +1,13 @@
+import json
+import sys
+
+from hubris.read_params import read_file
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        sys.exit("Requires spreadsheet arguments")
+    if len(sys.argv) > 3:
+        sys.exit("Sorry, only handling one or two arguments for now")
+    from pprint import pprint
+    data = read_file(*sys.argv[1:])
+    json.dump(data, sys.stdout, indent=4)
