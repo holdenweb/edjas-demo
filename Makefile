@@ -1,7 +1,7 @@
 # Define the directories
 PUGS = pug
 JINJA = templates
-TARGET = dist
+TARGET = out
 
 # General rule to convert jinja2 templates to.html files
 $(TARGET)/%.html: $(JINJA)/%.html

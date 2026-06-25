@@ -6,7 +6,7 @@ in the [`hubris`](https://pypi.org/project/hubris/) package, not in this demo. T
 point here is to see **the shape of the pipeline** and, in particular, the one boundary
 that keeps the design adaptable to data sources other than Excel.
 
-The whole thing is driven by `make dist/index.html`, which orchestrates three
+The whole thing is driven by `make out/index.html`, which orchestrates three
 independent producers (extract, compile, render) that meet at the final page.
 
 ---
@@ -60,7 +60,7 @@ flowchart LR
     end
 
     pivot -- "JSON (stdin)" --> jinja
-    jinja -- "rendered HTML" --> out[(dist/index.html)]:::store
+    jinja -- "rendered HTML" --> out[(out/index.html)]:::store
     out -- "open" --> reader_person
 
     classDef entity fill:#fde2c4,stroke:#c77b30,color:#000;
@@ -81,7 +81,7 @@ flowchart LR
 3. **Compilation (a side stream).** The reusable `text_styles` fragments are compiled
    from Pug sources into HTML, ready to be `{% include %}`d.
 4. **Rendering.** `jinja` merges the JSON data with `index.html` (and its included
-   fragments) to produce `dist/index.html`, which is then opened in a browser.
+   fragments) to produce `out/index.html`, which is then opened in a browser.
 
 > Detailed extraction semantics — how named ranges, nesting and value types are
 > interpreted — belong to the `hubris` package and are intentionally left as a black box
