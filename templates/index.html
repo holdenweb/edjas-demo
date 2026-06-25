@@ -63,7 +63,7 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
   {% set data = board_data[1:] %}
   <div class="w3-row w3-padding-64">
     <div class="w3-third w3-container">
-      <h1 class="w3-text-teal">{{ name }} v{{ version }}</h1>
+      <h1 class="w3-text-teal">{{ name }} v{{ version.number }}</h1>
         <table class="w3-table w3-striped">
           <tr>
             {% for col_name in headings %}

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ name }} v{{ version }} — report</title>
+  <title>{{ name }} v{{ version.number }} — report</title>
   <style>
     :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#0f766e; --accent-soft:#ccfbf1; }
     * { box-sizing: border-box; }
@@ -70,7 +70,7 @@
 <body data-active="{{ level }}">
   <div class="wrap">
     <header>
-      <h1>{{ name }} <small>v{{ version }}</small></h1>
+      <h1>{{ name }} <small>v{{ version.number }}</small></h1>
       <div class="seg" role="group" aria-label="Level of detail">
         <button data-level="executive" aria-pressed="{{ 'true' if level == 'executive' else 'false' }}">Executive</button>
         <button data-level="summary"   aria-pressed="{{ 'true' if level == 'summary'   else 'false' }}">Summary</button>
