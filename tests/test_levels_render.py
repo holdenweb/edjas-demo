@@ -2,16 +2,19 @@
 
 Red/blue TDD by verifying rendered output (not unit tests): this renders
 templates/levels.html against the real data extracted from demo_data.xlsx by
-hubris, and asserts the three altitudes and the computed roll-ups are present
-and correct. Run with:  uv run python tests/test_levels_render.py
+hubris, and asserts the three altitudes, the computed roll-ups, the
+per-occupation totals, and the generic footer are present and correct. Run with:
+    uv run python tests/test_levels_render.py
 """
 import os
 import sys
+from collections import defaultdict
 
 import jinja2
 from hubris.read_params import read_file
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ALLOWED_OCCUPATIONS = {"Tech Arch", "Developer", "DM"}
 
 failures = []
 
@@ -25,6 +28,10 @@ data = read_file(os.path.join(ROOT, "demo_data.xlsx"))
 # Extraction sanity — the data source we are reporting on.
 check(data.get("name") == "Tables Demo", "name not extracted as 'Tables Demo'")
 check(len(data.get("board_data", [])) == 7, "board_data should be 1 header + 6 rows")
+
+board = data.get("board_data", [[]])
+headings = board[0]
+rows = board[1:]
 
 env = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.join(ROOT, "templates")),
@@ -64,10 +71,31 @@ if html:
     n_details = html.count("<details")
     check(n_details == 6, f"expected 6 <details> blocks (one per player), got {n_details}")
 
+    # New: an Occupation column drives a per-occupation total.
+    check("Occupation" in headings, "Occupation column not added to board_data")
+    if "Occupation" in headings:
+        occ_idx = headings.index("Occupation")
+        occs = [r[occ_idx] for r in rows]
+        check(
+            all(o in ALLOWED_OCCUPATIONS for o in occs),
+            f"occupations outside the allowed set: {occs}",
+        )
+        totals = defaultdict(float)
+        for r in rows:
+            totals[r[occ_idx]] += r[2]
+        check(round(sum(totals.values())) == 499, "per-occupation totals do not sum to 499")
+        for occ, tot in totals.items():
+            check(occ in html, f"occupation '{occ}' not shown in the report")
+            check(str(int(tot)) in html, f"total for '{occ}' ({int(tot)}) not shown")
+
+    # New: footer no longer names a specific spreadsheet.
+    check("your spreadsheet" in html, "footer not made generic ('your spreadsheet')")
+    check("demo_data.xlsx" not in html, "footer still names demo_data.xlsx")
+
 if failures:
     print(f"RED — {len(failures)} check(s) failed:")
     for f in failures:
         print(f"  - {f}")
     sys.exit(1)
 
-print("BLUE — all checks passed; rendered report has all three altitudes and correct roll-ups")
+print("BLUE — three altitudes, correct roll-ups, per-occupation totals, generic footer")

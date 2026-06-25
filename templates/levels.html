@@ -88,17 +88,30 @@
         <div class="card"><div class="label">Total points</div><div class="value">{{ total | int }}</div></div>
         <div class="card"><div class="label">Leader</div><div class="value name">{{ leader[0] }} {{ leader[1] }}</div></div>
       </div>
+
+      <h2>By occupation</h2>
+      <table>
+        <tr><th>Occupation</th><th class="num">Players</th><th class="num">Total points</th></tr>
+        {% for occ, members in rows | groupby('3') %}
+        <tr>
+          <td>{{ occ }}</td>
+          <td class="num">{{ members | length }}</td>
+          <td class="num">{{ members | sum(attribute='2') | int }}</td>
+        </tr>
+        {% endfor %}
+      </table>
     </section>
 
     {# ---------- Altitude 2: Summary (ranked leaderboard) ---------- #}
     <section data-level="summary">
       <h2>Leaderboard</h2>
       <table>
-        <tr><th>#</th><th>Player</th><th class="num">Points</th><th style="width:35%">Share of leader</th></tr>
+        <tr><th>#</th><th>Player</th><th>Occupation</th><th class="num">Points</th><th style="width:30%">Share of leader</th></tr>
         {% for p in ranked %}
         <tr>
           <td><span class="rank g{{ loop.index if loop.index <= 3 else '' }}">{{ loop.index }}</span></td>
           <td>{{ p[0] }} {{ p[1] }}</td>
+          <td>{{ p[3] }}</td>
           <td class="num">{{ p[2] | int }}</td>
           <td><div class="bar"><span style="width: {{ (p[2] / high * 100) | round | int }}%"></span></div></td>
         </tr>
@@ -117,6 +130,7 @@
           <span class="pts">{{ p[2] | int }} pts</span>
         </summary>
         <div class="facts">
+          <div>Occupation<b>{{ p[3] }}</b></div>
           <div>Rank<b>{{ loop.index }} of {{ count }}</b></div>
           <div>Points<b>{{ p[2] | int }}</b></div>
           <div>Share of total<b>{{ (p[2] / total * 100) | round(1) }}%</b></div>
@@ -126,7 +140,7 @@
       {% endfor %}
     </section>
 
-    <footer>One source, three altitudes — generated from <code>demo_data.xlsx</code> via hubris. Switch level above; expand any player for detail.</footer>
+    <footer>One source, three altitudes — generated from your spreadsheet via hubris. Switch level above; expand any player for detail.</footer>
   </div>
 
   <script>
