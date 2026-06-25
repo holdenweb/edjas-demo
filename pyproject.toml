@@ -12,10 +12,18 @@ dependencies = [
     "jinja-cli (>=1.2.2,<2.0.0)",
     "flask (>=3.1.0,<4.0.0)",
     "openpyxl (>=3.1.5,<4.0.0)",
-    "hubris @ file:///Users/sholden/Projects/Python/hubris/dist/hubris-0.2.1-py3-none-any.whl",
+    "hubris",
 ]
 
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.uv.sources]
+hubris = { path = "../hubris", editable = true }
