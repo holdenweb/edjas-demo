@@ -1,191 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>W3.CSS Template</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/topnav/main.css?v=1.0.35">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/my-learning/main.css?v=1.0.30">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/pathfinder/main.css?v=1.0.3">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3schools32.css?v=1.0.5">
-<link rel="stylesheet" href="https://www.w3schools.com/plus/plans/main.css">
-
-<style>
-html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
-.w3-sidebar {
-  z-index: 3;
-  width: 250px;
-  top: 43px;
-  bottom: 0;
-  height: inherit;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HUBRIS demos — {{ name }}</title>
+  <style>
+    :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#0f766e; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; color: var(--ink); margin: 0; background: #fafafa; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    h1 { font-size: 1.9rem; margin: 0 0 0.3rem; }
+    .lede { color: var(--muted); margin: 0 0 2rem; }
+    .lede b { color: var(--ink); font-weight: 600; }
+    .demos { display: grid; gap: 14px; }
+    a.demo { display: block; text-decoration: none; color: inherit; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.3rem; transition: border-color .15s, transform .15s; }
+    a.demo:hover { border-color: var(--accent); transform: translateY(-1px); }
+    a.demo h2 { font-size: 1.15rem; margin: 0 0 0.25rem; color: var(--accent); }
+    a.demo p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    a.demo .go { float: right; color: var(--accent); font-weight: 600; }
+    footer { margin-top: 2.5rem; font-size: 0.8rem; color: var(--muted); }
+    footer code { background: #eef2f1; padding: 0.1rem 0.3rem; border-radius: 4px; }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <h1>HUBRIS demos</h1>
+    <p class="lede">Web pages generated from a spreadsheet by <b>hubris</b> — data source: <b>{{ name }}</b> (v{{ version.number }}).</p>
 
-<!-- Navbar -->
-<div class="w3-top">
-  <div class="w3-bar w3-theme w3-top w3-left-align w3-large">
-    <a class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1" href="javascript:void(0)" onclick="w3_open()"><i class="fa fa-bars"></i></a>
-    <a href="#" class="w3-bar-item w3-button w3-theme-l1">Logo</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">About</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Values</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">News</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Contact</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hide-medium w3-hover-white">Clients</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hide-medium w3-hover-white">Partners</a>
+    <div class="demos">
+      <a class="demo" href="simple.html">
+        <span class="go">View →</span>
+        <h2>Simple</h2>
+        <p>The smallest example — one table read straight from the spreadsheet.</p>
+      </a>
+      <a class="demo" href="levels.html">
+        <span class="go">View →</span>
+        <h2>Levels of detail</h2>
+        <p>One dataset at three altitudes — executive, summary, and full detail — switchable in the page.</p>
+      </a>
+      <a class="demo" href="dashboard.html">
+        <span class="go">View →</span>
+        <h2>Dashboard</h2>
+        <p>A graphical summary — KPI cards, a points-by-occupation breakdown, and per-player bars.</p>
+      </a>
+    </div>
+
+    <footer>Each page is produced by <code>make out/&lt;name&gt;.html</code> — hubris extracts the workbook, jinja renders the template.</footer>
   </div>
-</div>
-
-<!-- Sidebar -->
-<nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
-  <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
-    <i class="fa fa-remove"></i>
-  </a>
-  <h4 class="w3-bar-item"><b>Menu</b></h4>
-  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="#">Link</a>
-</nav>
-
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
-
-<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
-<div class="w3-main" style="margin-left:250px">
-
-  {% set headings = board_data[0] %}
-  {% set data = board_data[1:] %}
-  <div class="w3-row w3-padding-64">
-    <div class="w3-third w3-container">
-      <h1 class="w3-text-teal">{{ name }} v{{ version.number }}</h1>
-        <table class="w3-table w3-striped">
-          <tr>
-            {% for col_name in headings %}
-            <th>{{ col_name }}</th>
-            {% endfor %}
-          </tr>
-        {% for row in data %}
-        <tr>
-          {% for data_point in row %}
-            <td>{{data_point}}</td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-        </table>
-    </div>
-
-    <div class="w3-third w3-container">
-      <h1 class="w3-text-teal">Text Styles</h1>
-      <p>This is the default size for body test, but by
-      adding classes you can vary the size as shown
-      here.</p>
-      {% include 'text_styles1.html' %}
-    </div>
-    <div class="w3-third w3-container">
-      {% include 'text_styles2.html' %}
-    </div>
-  <div class="w3-row w3-padding-64">
-    <div class="w3-third w3-container">
-      <p class="w3-border w3-padding-large w3-padding-32 w3-center">AD</p>
-      <p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>
-    </div>
-  </div>
-
-  <div class="w3-row">
-    <div class="w3-twothird w3-container">
-      <h1 class="w3-text-teal">Heading</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum
-        dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
-    <div class="w3-third w3-container">
-      <p class="w3-border w3-padding-large w3-padding-32 w3-center">AD</p>
-      <p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>
-    </div>
-  </div>
-    <div class="w3-third w3-container">
-      <p class="w3-border w3-padding-large w3-padding-32 w3-center">AD</p>
-      <p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>
-    </div>
-    <div class="w3-twothird w3-container">
-      <h1 class="w3-text-teal">Table</h1>
-        <table>
-          <tr>
-            <th>Column 1</th>
-            <th>Column 2</th>
-            <th>Column 3</th>
-          </tr>
-
-          {% for col1, col2, col3 in col_values %}
-            <tr>
-              <td>{{ col1 }}</td>
-              <td>{{ col2 }}</td>
-              <td>{{ col3 }}</td>
-            </tr>
-          {% endfor %}
-        </table>
-
-    </div>
-    <div class="w3-third w3-container">
-      <p class="w3-border w3-padding-large w3-padding-32 w3-center">AD</p>
-      <p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>
-    </div>
-  </div>
-
-  <!-- Pagination -->
-  <div class="w3-center w3-padding-32">
-    <div class="w3-bar">
-      <a class="w3-button w3-black" href="#">1</a>
-      <a class="w3-button w3-hover-black" href="#">2</a>
-      <a class="w3-button w3-hover-black" href="#">3</a>
-      <a class="w3-button w3-hover-black" href="#">4</a>
-      <a class="w3-button w3-hover-black" href="#">5</a>
-      <a class="w3-button w3-hover-black" href="#">»</a>
-    </div>
-  </div>
-
-  <footer id="myFooter">
-    <div class="w3-container w3-theme-l2 w3-padding-32">
-      <h4>Footer</h4>
-    </div>
-
-    <div class="w3-container w3-theme-l1">
-      <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
-    </div>
-  </footer>
-
-<!-- END MAIN -->
-</div>
-
-<script>
-// Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
-
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
-
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function w3_open() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
-    overlayBg.style.display = "none";
-  } else {
-    mySidebar.style.display = 'block';
-    overlayBg.style.display = "block";
-  }
-}
-
-// Close the sidebar with the close button
-function w3_close() {
-  mySidebar.style.display = "none";
-  overlayBg.style.display = "none";
-}
-</script>
-
 </body>
 </html>

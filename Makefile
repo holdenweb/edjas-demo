@@ -12,6 +12,3 @@ $(TARGET)/%.html: $(JINJA)/%.html
 $(JINJA)/%.html: $(PUGS)/%.pug
 
 	pug -P -o $(JINJA) $<
-
-# Additional dependencies per specofic targets
-$(TARGET)/index.html: $(JINJA)/text_styles1.html $(JINJA)/text_styles2.html
