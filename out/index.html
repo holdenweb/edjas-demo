@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HUBRIS demos — Tables Demo</title>
+  <style>
+    :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#0f766e; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; color: var(--ink); margin: 0; background: #fafafa; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    h1 { font-size: 1.9rem; margin: 0 0 0.3rem; }
+    .lede { color: var(--muted); margin: 0 0 2rem; }
+    .lede b { color: var(--ink); font-weight: 600; }
+    .demos { display: grid; gap: 14px; }
+    a.demo { display: block; text-decoration: none; color: inherit; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.3rem; transition: border-color .15s, transform .15s; }
+    a.demo:hover { border-color: var(--accent); transform: translateY(-1px); }
+    a.demo h2 { font-size: 1.15rem; margin: 0 0 0.25rem; color: var(--accent); }
+    a.demo p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    a.demo .go { float: right; color: var(--accent); font-weight: 600; }
+    footer { margin-top: 2.5rem; font-size: 0.8rem; color: var(--muted); }
+    footer code { background: #eef2f1; padding: 0.1rem 0.3rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>HUBRIS demos</h1>
+    <p class="lede">Web pages generated from a spreadsheet by <b>hubris</b> — data source: <b>Tables Demo</b> (v0.1.2).</p>
+
+    <div class="demos">
+      <a class="demo" href="simple.html">
+        <span class="go">View →</span>
+        <h2>Simple</h2>
+        <p>The smallest example — one table read straight from the spreadsheet.</p>
+      </a>
+      <a class="demo" href="levels.html">
+        <span class="go">View →</span>
+        <h2>Levels of detail</h2>
+        <p>One dataset at three altitudes — executive, summary, and full detail — switchable in the page.</p>
+      </a>
+      <a class="demo" href="dashboard.html">
+        <span class="go">View →</span>
+        <h2>Dashboard</h2>
+        <p>A graphical summary — KPI cards, a points-by-occupation breakdown, and per-player bars.</p>
+      </a>
+    </div>
+
+    <footer>Each page is produced by <code>make out/&lt;name&gt;.html</code> — hubris extracts the workbook, jinja renders the template.</footer>
+  </div>
+</body>
+</html>

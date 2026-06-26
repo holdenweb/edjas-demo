@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tables Demo v0.1.2 — dashboard</title>
+  <style>
+    :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --track:#f1f5f9; --accent:#0f766e; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; color: var(--ink); margin: 0; background: #fafafa; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    header { display: flex; gap: 0.75rem; align-items: baseline; }
+    h1 { font-size: 1.6rem; margin: 0; } h1 small { color: var(--muted); font-weight: normal; font-size: 1rem; }
+    .tag { margin-left: auto; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); border: 1px solid #99f6e4; background: #f0fdfa; padding: 0.2rem 0.55rem; border-radius: 6px; }
+    h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 2rem 0 0.75rem; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; }
+    .card .label { font-size: 0.8rem; color: var(--muted); }
+    .card .value { font-size: 1.7rem; font-weight: 600; margin-top: 0.25rem; }
+    .card .value.name { font-size: 1.2rem; }
+
+    .stack { display: flex; height: 30px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #fff; }
+    .stack span { display: block; }
+    .legend { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.7rem; font-size: 0.9rem; color: var(--muted); }
+    .legend .lg { display: flex; align-items: center; gap: 0.4rem; }
+    .legend .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+    .players { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.4rem 0.9rem; }
+    .prow { display: grid; grid-template-columns: 150px 1fr 44px; align-items: center; gap: 0.8rem; padding: 0.45rem 0; border-bottom: 1px solid var(--line); }
+    .prow:last-child { border-bottom: 0; }
+    .pname { font-weight: 500; font-size: 0.95rem; }
+    .ptrack { background: var(--track); border-radius: 5px; height: 14px; }
+    .ptrack > span { display: block; height: 100%; border-radius: 5px; }
+    .pval { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+    footer { margin-top: 2.5rem; font-size: 0.8rem; color: var(--muted); }
+  </style>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Tables Demo <small>v0.1.2</small></h1>
+      <span class="tag">Dashboard</span>
+    </header>
+
+    
+    <h2>At a glance</h2>
+    <div class="cards">
+      <div class="card"><div class="label">Players</div><div class="value">6</div></div>
+      <div class="card"><div class="label">Average points</div><div class="value">83</div></div>
+      <div class="card"><div class="label">High score</div><div class="value">123</div></div>
+      <div class="card"><div class="label">Total points</div><div class="value">499</div></div>
+      <div class="card"><div class="label">Leader</div><div class="value name">John Johnson</div></div>
+    </div>
+
+    
+    <h2>Points by occupation</h2>
+    <div class="stack">
+      
+      
+      <span data-occseg="Developer" style="flex: 190 0 0; background: #2563eb;" title="Developer: 190 pts"></span>
+      
+      
+      <span data-occseg="DM" style="flex: 50 0 0; background: #d97706;" title="DM: 50 pts"></span>
+      
+      
+      <span data-occseg="Tech Arch" style="flex: 259 0 0; background: #0f766e;" title="Tech Arch: 259 pts"></span>
+      
+    </div>
+    <div class="legend">
+      
+      <span class="lg"><span class="dot" style="background: #2563eb;"></span>Developer — 190 pts (2)</span>
+      
+      <span class="lg"><span class="dot" style="background: #d97706;"></span>DM — 50 pts (1)</span>
+      
+      <span class="lg"><span class="dot" style="background: #0f766e;"></span>Tech Arch — 259 pts (3)</span>
+      
+    </div>
+
+    
+    <h2>Points per player</h2>
+    <div class="players">
+      
+      <div class="prow" data-player="John Johnson">
+        <div class="pname">John Johnson</div>
+        <div class="ptrack"><span style="width: 100%; background: #2563eb;"></span></div>
+        <div class="pval">123</div>
+      </div>
+      
+      <div class="prow" data-player="Steven Pugh">
+        <div class="pname">Steven Pugh</div>
+        <div class="ptrack"><span style="width: 80%; background: #0f766e;"></span></div>
+        <div class="pval">98</div>
+      </div>
+      
+      <div class="prow" data-player="Eve Jackson">
+        <div class="pname">Eve Jackson</div>
+        <div class="ptrack"><span style="width: 76%; background: #0f766e;"></span></div>
+        <div class="pval">94</div>
+      </div>
+      
+      <div class="prow" data-player="Adam Johnson">
+        <div class="pname">Adam Johnson</div>
+        <div class="ptrack"><span style="width: 54%; background: #2563eb;"></span></div>
+        <div class="pval">67</div>
+      </div>
+      
+      <div class="prow" data-player="Steve Holden">
+        <div class="pname">Steve Holden</div>
+        <div class="ptrack"><span style="width: 54%; background: #0f766e;"></span></div>
+        <div class="pval">67</div>
+      </div>
+      
+      <div class="prow" data-player="Jill Smith">
+        <div class="pname">Jill Smith</div>
+        <div class="ptrack"><span style="width: 41%; background: #d97706;"></span></div>
+        <div class="pval">50</div>
+      </div>
+      
+    </div>
+
+    <footer>Graphical summary — generated from your spreadsheet via hubris. Edit a cell, rebuild, and every number, bar and segment updates.</footer>
+  </div>
+</body>
+</html>
