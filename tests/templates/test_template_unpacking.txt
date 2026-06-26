@@ -1,0 +1,13 @@
+
+{% set a, b, c = ["quick", "brown", "fox"] %}
+a = {{ a }}, b = {{ b }}, c = {{ c }}
+
+
+{% set rows = [["Column1", "Column 2", "Column 3"], ["R1 C1", "R1 C2", "R1 C3"], ["R2 C1", "R2 C2", "R2 C3"], ["R3 C1", "R3 C2", "R3 C3"], ["R4 C1", "R4 C2", "R4 C3"]] %}
+{% set row = rows[0] %}
+row = {{ row }}
+
+
+{% set matrix = rows[1:] %}
+matrix = {{ matrix }}
+

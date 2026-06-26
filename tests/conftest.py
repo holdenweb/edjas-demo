@@ -26,11 +26,6 @@ def data():
     return read_file(os.path.join(ROOT, "demo_data.xlsx"))
 
 
-@pytest.fixture(scope="session")
-def sample_data():
-    return read_file(os.path.join(ROOT, "levels_sample.xlsx"))
-
-
 @pytest.fixture
 def render(env):
     def _render(template, data):
