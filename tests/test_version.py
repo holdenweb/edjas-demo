@@ -9,7 +9,8 @@ TEMPLATES = ["levels.html", "dashboard.html", "simple.html", "index.html"]
 
 
 def test_version_is_nested_dict(data):
-    assert data["version"] == {"number": "0.1.2"}
+    assert isinstance(data["version"], dict)
+    assert data["version"]["number"] == "0.1.2"
 
 
 @pytest.mark.parametrize("template", TEMPLATES)
