@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ name }} v{{ version.number }} — dashboard</title>
+  <style>
+    :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --track:#f1f5f9; --accent:#0f766e; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; color: var(--ink); margin: 0; background: #fafafa; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    header { display: flex; gap: 0.75rem; align-items: baseline; }
+    h1 { font-size: 1.6rem; margin: 0; } h1 small { color: var(--muted); font-weight: normal; font-size: 1rem; }
+    .tag { margin-left: auto; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); border: 1px solid #99f6e4; background: #f0fdfa; padding: 0.2rem 0.55rem; border-radius: 6px; }
+    h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 2rem 0 0.75rem; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; }
+    .card .label { font-size: 0.8rem; color: var(--muted); }
+    .card .value { font-size: 1.7rem; font-weight: 600; margin-top: 0.25rem; }
+    .card .value.name { font-size: 1.2rem; }
+
+    .stack { display: flex; height: 30px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #fff; }
+    .stack span { display: block; }
+    .legend { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.7rem; font-size: 0.9rem; color: var(--muted); }
+    .legend .lg { display: flex; align-items: center; gap: 0.4rem; }
+    .legend .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+    .players { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.4rem 0.9rem; }
+    .prow { display: grid; grid-template-columns: 150px 1fr 44px; align-items: center; gap: 0.8rem; padding: 0.45rem 0; border-bottom: 1px solid var(--line); }
+    .prow:last-child { border-bottom: 0; }
+    .pname { font-weight: 500; font-size: 0.95rem; }
+    .ptrack { background: var(--track); border-radius: 5px; height: 14px; }
+    .ptrack > span { display: block; height: 100%; border-radius: 5px; }
+    .pval { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+    footer { margin-top: 2.5rem; font-size: 0.8rem; color: var(--muted); }
+  </style>
+</head>
+
+{# ---- Derive everything from the single board_data range ---- #}
+{% set rows   = board_data[1:] %}
+{% set ranked = rows | sort(attribute='2', reverse=true) %}
+{% set count  = rows | length %}
+{% set total  = rows | sum(attribute='2') %}
+{% set leader = ranked[0] %}
+{% set high   = leader[2] %}
+{% set avg    = (total / count) | round | int %}
+{# One colour per occupation, shared by the stacked bar, the legend and the player bars. #}
+{% set palette = {'Tech Arch': '#0f766e', 'Developer': '#2563eb', 'DM': '#d97706'} %}
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>{{ name }} <small>v{{ version.number }}{% if version.name %} “{{ version.name }}”{% endif %}{% if version.build %} · build {{ version.build }}{% endif %}</small></h1>
+      <span class="tag">Dashboard</span>
+    </header>
+
+    {# ---- KPI cards ---- #}
+    <h2>At a glance</h2>
+    <div class="cards">
+      <div class="card"><div class="label">Players</div><div class="value">{{ count }}</div></div>
+      <div class="card"><div class="label">Average points</div><div class="value">{{ avg }}</div></div>
+      <div class="card"><div class="label">High score</div><div class="value">{{ high | int }}</div></div>
+      <div class="card"><div class="label">Total points</div><div class="value">{{ total | int }}</div></div>
+      <div class="card"><div class="label">Leader</div><div class="value name">{{ leader[0] }} {{ leader[1] }}</div></div>
+    </div>
+
+    {# ---- Points by occupation: one stacked bar, sized by each total ---- #}
+    <h2>Points by occupation</h2>
+    <div class="stack">
+      {% for occ, members in rows | groupby('3') %}
+      {% set otot = members | sum(attribute='2') | int %}
+      <span data-occseg="{{ occ }}" style="flex: {{ otot }} 0 0; background: {{ palette.get(occ, '#64748b') }};" title="{{ occ }}: {{ otot }} pts"></span>
+      {% endfor %}
+    </div>
+    <div class="legend">
+      {% for occ, members in rows | groupby('3') %}
+      <span class="lg"><span class="dot" style="background: {{ palette.get(occ, '#64748b') }};"></span>{{ occ }} — {{ members | sum(attribute='2') | int }} pts ({{ members | length }})</span>
+      {% endfor %}
+    </div>
+
+    {# ---- Points per player: ranked bars, coloured by occupation ---- #}
+    <h2>Points per player</h2>
+    <div class="players">
+      {% for p in ranked %}
+      <div class="prow" data-player="{{ p[0] }} {{ p[1] }}">
+        <div class="pname">{{ p[0] }} {{ p[1] }}</div>
+        <div class="ptrack"><span style="width: {{ (p[2] / high * 100) | round | int }}%; background: {{ palette.get(p[3], '#64748b') }};"></span></div>
+        <div class="pval">{{ p[2] | int }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <footer>Graphical summary — generated from your spreadsheet via hubris. Edit a cell, rebuild, and every number, bar and segment updates.</footer>
+  </div>
+</body>
+</html>

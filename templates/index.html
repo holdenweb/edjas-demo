@@ -48,7 +48,7 @@
           <a class="go" href="{{ d.file }}.html">View →</a>
         </div>
         <p>{{ d.desc }}</p>
-        <p class="src">Source: <a href="../templates/{{ d.file }}.html"><code>templates/{{ d.file }}.html</code></a></p>
+        <p class="src">Source: <a href="{{ d.file }}.html.txt"><code>templates/{{ d.file }}.html</code></a></p>
         <pre class="cmd">uv run python hubris_demo.py demo_data.xlsx | uv run jinja -d - -f json templates/{{ d.file }}.html > out/{{ d.file }}.html</pre>
       </div>
       {% endfor %}

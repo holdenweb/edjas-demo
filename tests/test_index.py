@@ -16,7 +16,9 @@ def test_links_to_outputs(render, data):
 def test_links_to_sources(render, data):
     html = render("index.html", data)
     for d in DEMOS:
-        assert f'href="../templates/{d}.html"' in html
+        # link to a plain-text copy so the browser shows source, not a render
+        assert f'href="{d}.html.txt"' in html
+        assert f"templates/{d}.html" in html  # link text still names the source
 
 
 def test_shows_generating_command(render, data):
