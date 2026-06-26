@@ -1,14 +1,33 @@
-"""Rendered-output check: the index page is a landing page linking the demos."""
+"""Rendered-output checks for the index landing page.
 
-DEMOS = ["simple.html", "levels.html", "dashboard.html"]
+Each demo card links to its output and its source template, and shows the
+command make runs to build the output.
+"""
 
-
-def test_index_links_to_demos(render, data):
-    html = render("index.html", {**data, "col_values": []})
-    for demo in DEMOS:
-        assert f'href="{demo}"' in html
+DEMOS = ["simple", "levels", "dashboard"]
 
 
-def test_index_shows_version(render, data):
-    html = render("index.html", {**data, "col_values": []})
+def test_links_to_outputs(render, data):
+    html = render("index.html", data)
+    for d in DEMOS:
+        assert f'href="{d}.html"' in html
+
+
+def test_links_to_sources(render, data):
+    html = render("index.html", data)
+    for d in DEMOS:
+        assert f'href="../templates/{d}.html"' in html
+
+
+def test_shows_generating_command(render, data):
+    html = render("index.html", data)
+    for d in DEMOS:
+        assert (
+            f"uv run python hubris_demo.py demo_data.xlsx | "
+            f"uv run jinja -d - -f json templates/{d}.html > out/{d}.html"
+        ) in html
+
+
+def test_shows_version(render, data):
+    html = render("index.html", data)
     assert "v0.1.2" in html
