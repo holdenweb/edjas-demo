@@ -15,7 +15,14 @@ def test_version_is_nested_dict(data):
 
 @pytest.mark.parametrize("template", TEMPLATES)
 def test_template_uses_version_number(render, data, template):
-    # col_values is only needed by the legacy index.html's second table.
-    html = render(template, {**data, "col_values": []})
+    html = render(template, data)
     assert "v0.1.2" in html
     assert "{'number'" not in html  # no scalar {{ version }} leaking the dict repr
+
+
+@pytest.mark.parametrize("template", TEMPLATES)
+def test_template_surfaces_codename_and_build(render, data, template):
+    # The optional version.name / version.build are shown where the version appears.
+    html = render(template, data)
+    assert data["version"]["name"] in html
+    assert data["version"]["build"] in html

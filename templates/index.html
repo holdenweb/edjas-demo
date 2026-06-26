@@ -32,7 +32,7 @@
 <body>
   <div class="wrap">
     <h1>HUBRIS demos</h1>
-    <p class="lede">Web pages generated from a spreadsheet by <b>hubris</b> — data source: <b>{{ name }}</b> (v{{ version.number }}).</p>
+    <p class="lede">Web pages generated from a spreadsheet by <b>hubris</b> — data source: <b>{{ name }}</b> — v{{ version.number }}{% if version.name %} “{{ version.name }}”{% endif %}{% if version.build %} · build {{ version.build }}{% endif %}.</p>
 
     {% set demos = [
       {"title": "Simple", "file": "simple", "desc": "The smallest example — one table read straight from the spreadsheet."},

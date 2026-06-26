@@ -51,7 +51,7 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>{{ name }} <small>v{{ version.number }}</small></h1>
+      <h1>{{ name }} <small>v{{ version.number }}{% if version.name %} “{{ version.name }}”{% endif %}{% if version.build %} · build {{ version.build }}{% endif %}</small></h1>
       <span class="tag">Dashboard</span>
     </header>
 

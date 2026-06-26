@@ -14,7 +14,7 @@
 <body>
 
   <!-- Two scalars pulled straight from the "Parameters" range -->
-  <h1>{{ name }} <small>v{{ version.number }}</small></h1>
+  <h1>{{ name }} <small>v{{ version.number }}{% if version.name %} “{{ version.name }}”{% endif %}{% if version.build %} · build {{ version.build }}{% endif %}</small></h1>
 
   <!-- board_data is the "scoreboard" range: first row = headings, the rest = data -->
   {% set headings = board_data[0] %}
