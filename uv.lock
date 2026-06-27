@@ -42,6 +42,47 @@ wheels = [
 ]
 
 [[package]]
+name = "edjas"
+version = "0.5.0"
+source = { editable = "../edjas" }
+dependencies = [
+    { name = "openpyxl" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "openpyxl", specifier = ">=3.1.5,<4.0.0" }]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8" }]
+
+[[package]]
+name = "edjas-demo"
+version = "0.3.3"
+source = { editable = "." }
+dependencies = [
+    { name = "edjas" },
+    { name = "flask" },
+    { name = "jinja-cli" },
+    { name = "openpyxl" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "edjas", editable = "../edjas" },
+    { name = "flask", specifier = ">=3.1.0,<4.0.0" },
+    { name = "jinja-cli", specifier = ">=1.2.2,<2.0.0" },
+    { name = "openpyxl", specifier = ">=3.1.5,<4.0.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=9.1.1" }]
+
+[[package]]
 name = "et-xmlfile"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -66,47 +107,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/26/00/35d85dcce6c57fdc8
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7f/9c/34f6962f9b9e9c71f6e5ed806e0d0ff03c9d1b0b2340088a0cf4bce09b18/flask-3.1.3-py3-none-any.whl", hash = "sha256:f4bcbefc124291925f1a26446da31a5178f9483862233b23c0c96a20701f670c", size = 103424, upload-time = "2026-02-19T05:00:56.027Z" },
 ]
-
-[[package]]
-name = "hubris"
-version = "0.4.0a2"
-source = { editable = "../hubris" }
-dependencies = [
-    { name = "openpyxl" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "openpyxl", specifier = ">=3.1.5,<4.0.0" }]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8" }]
-
-[[package]]
-name = "hubris-demo"
-version = "0.3.3"
-source = { editable = "." }
-dependencies = [
-    { name = "flask" },
-    { name = "hubris" },
-    { name = "jinja-cli" },
-    { name = "openpyxl" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "flask", specifier = ">=3.1.0,<4.0.0" },
-    { name = "hubris", editable = "../hubris" },
-    { name = "jinja-cli", specifier = ">=1.2.2,<2.0.0" },
-    { name = "openpyxl", specifier = ">=3.1.5,<4.0.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=9.1.1" }]
 
 [[package]]
 name = "iniconfig"

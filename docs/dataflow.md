@@ -1,8 +1,8 @@
-# HUBRIS production process — dataflow
+# EDJAS production process — dataflow
 
 This is the bird's‑eye view of how a spreadsheet becomes a published HTML page.
-It is deliberately high‑level: the details of *how* HUBRIS reads a data source live
-in the [`hubris`](https://pypi.org/project/hubris/) package, not in this demo. The
+It is deliberately high‑level: the details of *how* EDJAS reads a data source live
+in the [`edjas`](https://pypi.org/project/edjas/) package, not in this demo. The
 point here is to see **the shape of the pipeline** and, in particular, the one boundary
 that keeps the design adaptable to data sources other than Excel.
 
@@ -30,14 +30,14 @@ flowchart LR
     %% ---- Authoring ----
     author -- "annotate:<br/>named ranges + { } / [ ] markup" --> wb
 
-    subgraph source [HUBRIS data source]
+    subgraph source [EDJAS data source]
         wb[(Excel workbook<br/>demo_data.xlsx)]:::store
     end
 
     %% ---- Extraction: the source-agnostic boundary ----
     subgraph extract [Extraction · source-agnostic boundary]
         direction TB
-        xl["Excel reader<br/>hubris.read_params.read_file<br/><i>(openpyxl)</i>"]:::proc
+        xl["Excel reader<br/>edjas.read_params.read_file<br/><i>(openpyxl)</i>"]:::proc
         future["CSV / DB / JSON adapter<br/><i>(future)</i>"]:::future
         pivot{{"data structure<br/>nested dict → JSON"}}:::pivot
         xl --> pivot
@@ -74,7 +74,7 @@ flowchart LR
 
 1. **Authoring.** The author takes an ordinary Excel workbook and *annotates* it with
    defined names and a little reference markup (Diagram B explains this). That annotated
-   workbook is the HUBRIS *data source*.
+   workbook is the EDJAS *data source*.
 2. **Extraction.** `read_file` opens the workbook and walks the named ranges, producing
    a plain nested dictionary — serialised here as JSON. This is the **pivot**: from this
    point on, nothing downstream is Excel‑specific.
@@ -84,14 +84,14 @@ flowchart LR
    fragments) to produce `out/index.html`, which is then opened in a browser.
 
 > Detailed extraction semantics — how named ranges, nesting and value types are
-> interpreted — belong to the `hubris` package and are intentionally left as a black box
+> interpreted — belong to the `edjas` package and are intentionally left as a black box
 > here.
 
 ---
 
-## Diagram B — how a workbook becomes a HUBRIS data source
+## Diagram B — how a workbook becomes a EDJAS data source
 
-This zooms into step 1. A *plain* spreadsheet carries no structure HUBRIS can use; you
+This zooms into step 1. A *plain* spreadsheet carries no structure EDJAS can use; you
 turn it into a data source by adding **defined names (named ranges)** and a two‑column
 **key → value** layout, where a value may itself *reference* another named range.
 

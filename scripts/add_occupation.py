@@ -3,7 +3,7 @@
 Each player gets a value chosen randomly from {Tech Arch, Developer, DM}. The
 choice is seeded so the committed workbook is reproducible (re-running yields
 the same assignment). The scoreboard named range grows from D3:F9 to D3:G9 so
-hubris reads the new column. Run with:
+edjas reads the new column. Run with:
     uv run python scripts/add_occupation.py
 """
 import os

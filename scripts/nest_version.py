@@ -1,7 +1,7 @@
 """Nest the demo's version into a {number} dict.
 
 Sets Sheet1!B4 to '{version}' and adds a one-row 'version' named range
-(number | 0.1.2). This relies on the hubris flatten fix, which lets a
+(number | 0.1.2). This relies on the edjas flatten fix, which lets a
 single-entry dict read correctly instead of being flattened to a vector.
 Idempotent; demo_data.xlsx is modified in place (still on Sheet1). Run with:
     uv run python scripts/nest_version.py

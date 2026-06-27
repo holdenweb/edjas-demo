@@ -10,7 +10,7 @@ docs: $(TARGET)/index.html $(TARGET)/simple.html $(TARGET)/levels.html $(TARGET)
 # General rule to convert jinja2 templates to.html files
 $(TARGET)/%.html: $(JINJA)/%.html demo_data.xlsx
 
-	uv run hubris demo_data.xlsx \
+	uv run edjas demo_data.xlsx \
 	| uv run jinja -d - -f json $< > $@
 
 # Plain-text copies of the templates, served as text/plain so the index's

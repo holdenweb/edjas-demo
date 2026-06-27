@@ -1,13 +1,13 @@
 """Shared pytest fixtures for the demo's rendered-output checks.
 
 Tests verify rendered output (not units): they render the templates against the
-real data hubris extracts from the demo workbooks, and assert on the HTML.
+real data edjas extracts from the demo workbooks, and assert on the HTML.
 """
 import os
 
 import jinja2
 import pytest
-from hubris.read_params import read_file
+from edjas.read_params import read_file
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

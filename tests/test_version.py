@@ -1,6 +1,6 @@
 """Rendered-output check: version is a nested {number} dict.
 
-Driven by the hubris flatten fix (a one-entry dict is no longer flattened to a
+Driven by the edjas flatten fix (a one-entry dict is no longer flattened to a
 vector), version is {number: '1.0.2'} and every template renders version.number.
 """
 import pytest

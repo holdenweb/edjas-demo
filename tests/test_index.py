@@ -25,7 +25,7 @@ def test_shows_generating_command(render, data):
     html = render("index.html", data)
     for d in DEMOS:
         assert (
-            f"uv run hubris demo_data.xlsx | "
+            f"uv run edjas demo_data.xlsx | "
             f"uv run jinja -d - -f json templates/{d}.html > out/{d}.html"
         ) in html
 

@@ -1,7 +1,7 @@
 [project]
-name = "hubris-demo"
+name = "edjas-demo"
 version = "0.3.3"
-description = "Demonstration web site for Hubris"
+description = "Demonstration web site for EDJAS"
 authors = [
     {name = "Steve Holden",email = "steve@holdenweb.com"}
 ]
@@ -12,7 +12,7 @@ dependencies = [
     "jinja-cli (>=1.2.2,<2.0.0)",
     "flask (>=3.1.0,<4.0.0)",
     "openpyxl (>=3.1.5,<4.0.0)",
-    "hubris",
+    "edjas",
 ]
 
 
@@ -26,4 +26,4 @@ dev = [
 ]
 
 [tool.uv.sources]
-hubris = { path = "../hubris", editable = true }
+edjas = { path = "../edjas", editable = true }
