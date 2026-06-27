@@ -1,7 +1,7 @@
 import json
 import sys
 
-from hubris.read_params import read_file
+from edjas.read_params import read_file
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
