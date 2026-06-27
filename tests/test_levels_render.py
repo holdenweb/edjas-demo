@@ -17,7 +17,7 @@ def test_three_altitudes(render, data):
 
 def test_executive_rollups(render, data):
     html = render("levels.html", data)
-    assert "Tables Demo" in html and "0.1.2" in html
+    assert "Tables Demo" in html and "1.0.2" in html
     for token in ("499", "83", "123", "John Johnson"):
         assert token in html
 

@@ -25,11 +25,11 @@ def test_shows_generating_command(render, data):
     html = render("index.html", data)
     for d in DEMOS:
         assert (
-            f"uv run python hubris_demo.py demo_data.xlsx | "
+            f"uv run hubris demo_data.xlsx | "
             f"uv run jinja -d - -f json templates/{d}.html > out/{d}.html"
         ) in html
 
 
 def test_shows_version(render, data):
     html = render("index.html", data)
-    assert "v0.1.2" in html
+    assert "v1.0.2" in html

@@ -2,6 +2,11 @@
 JINJA = templates
 TARGET = out
 
+# Default target: bring all generated documentation (the demo pages, with their
+# linked source copies) up to date.
+.PHONY: docs
+docs: $(TARGET)/index.html $(TARGET)/simple.html $(TARGET)/levels.html $(TARGET)/dashboard.html
+
 # General rule to convert jinja2 templates to.html files
 $(TARGET)/%.html: $(JINJA)/%.html demo_data.xlsx
 

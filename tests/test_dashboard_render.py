@@ -4,7 +4,7 @@ from collections import defaultdict
 
 def test_kpis(render, data):
     html = render("dashboard.html", data)
-    assert "Tables Demo" in html and "0.1.2" in html
+    assert "Tables Demo" in html and "1.0.2" in html
     for token in ("6", "83", "123", "499", "John Johnson"):
         assert token in html
 
