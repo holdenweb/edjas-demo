@@ -1,6 +1,6 @@
 [project]
 name = "hubris-demo"
-version = "0.3.1"
+version = "0.3.3"
 description = "Demonstration web site for Hubris"
 authors = [
     {name = "Steve Holden",email = "steve@holdenweb.com"}
