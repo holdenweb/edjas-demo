@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tables Demo v1.0.2 — report</title>
+  <style>
+    :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#0f766e; --accent-soft:#ccfbf1; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; color: var(--ink); margin: 0; background: #fafafa; }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    header { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+    h1 { font-size: 1.6rem; margin: 0; }
+    h1 small { color: var(--muted); font-weight: normal; font-size: 1rem; }
+    h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 2rem 0 0.75rem; }
+
+    /* Level selector — the reader-controlled method */
+    .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+    .seg button { font: inherit; border: 0; background: #fff; padding: 0.5rem 0.9rem; cursor: pointer; color: var(--muted); border-left: 1px solid var(--line); }
+    .seg button:first-child { border-left: 0; }
+    .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
+    /* Altitudes — only the active one shows; the author sets the initial one */
+    section[data-level] { display: none; }
+    body[data-active="executive"] section[data-level="executive"],
+    body[data-active="summary"]   section[data-level="summary"],
+    body[data-active="detail"]    section[data-level="detail"] { display: block; }
+
+    /* Executive: aggregate-only KPI cards */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; }
+    .card .label { font-size: 0.8rem; color: var(--muted); }
+    .card .value { font-size: 1.7rem; font-weight: 600; margin-top: 0.25rem; }
+    .card .value.name { font-size: 1.2rem; }
+
+    /* Summary: ranked leaderboard */
+    table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    th, td { padding: 0.55rem 0.8rem; text-align: left; border-bottom: 1px solid var(--line); }
+    th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .rank { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; font-size: 0.8rem; background: #f3f4f6; }
+    .rank.g1 { background: #fde68a; } .rank.g2 { background: #e5e7eb; } .rank.g3 { background: #fed7aa; }
+    .bar { height: 8px; border-radius: 4px; background: var(--accent-soft); }
+    .bar > span { display: block; height: 100%; border-radius: 4px; background: var(--accent); }
+
+    /* Detail: per-row progressive disclosure */
+    details { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.5rem 0.9rem; margin-bottom: 8px; }
+    details[open] { border-color: var(--accent); }
+    summary { cursor: pointer; display: flex; gap: 0.6rem; align-items: center; font-weight: 500; }
+    summary .pts { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .facts { margin: 0.6rem 0 0.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; }
+    .facts div { font-size: 0.85rem; color: var(--muted); }
+    .facts b { display: block; color: var(--ink); font-size: 1.05rem; font-weight: 600; }
+    footer { margin-top: 2.5rem; font-size: 0.8rem; color: var(--muted); }
+  </style>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+<body data-active="executive">
+  <div class="wrap">
+    <header>
+      <h1>Tables Demo <small>v1.0.2 “weasel” · build 20260625-1</small></h1>
+      <div class="seg" role="group" aria-label="Level of detail">
+        <button data-level="executive" aria-pressed="true">Executive</button>
+        <button data-level="summary"   aria-pressed="false">Summary</button>
+        <button data-level="detail"    aria-pressed="false">Full detail</button>
+      </div>
+    </header>
+
+    
+    <section data-level="executive">
+      <h2>At a glance</h2>
+      <div class="cards">
+        <div class="card"><div class="label">Players</div><div class="value">6</div></div>
+        <div class="card"><div class="label">Average points</div><div class="value">83</div></div>
+        <div class="card"><div class="label">High score</div><div class="value">123</div></div>
+        <div class="card"><div class="label">Total points</div><div class="value">499</div></div>
+        <div class="card"><div class="label">Leader</div><div class="value name">John Johnson</div></div>
+      </div>
+
+      <h2>By occupation</h2>
+      <table>
+        <tr><th>Occupation</th><th class="num">Players</th><th class="num">Total points</th></tr>
+        
+        <tr>
+          <td>Developer</td>
+          <td class="num">2</td>
+          <td class="num">190</td>
+        </tr>
+        
+        <tr>
+          <td>DM</td>
+          <td class="num">1</td>
+          <td class="num">50</td>
+        </tr>
+        
+        <tr>
+          <td>Tech Arch</td>
+          <td class="num">3</td>
+          <td class="num">259</td>
+        </tr>
+        
+      </table>
+    </section>
+
+    
+    <section data-level="summary">
+      <h2>Leaderboard</h2>
+      <table>
+        <tr><th>#</th><th>Player</th><th>Occupation</th><th class="num">Points</th><th style="width:30%">Share of leader</th></tr>
+        
+        <tr>
+          <td><span class="rank g1">1</span></td>
+          <td>John Johnson</td>
+          <td>Developer</td>
+          <td class="num">123</td>
+          <td><div class="bar"><span style="width: 100%"></span></div></td>
+        </tr>
+        
+        <tr>
+          <td><span class="rank g2">2</span></td>
+          <td>Steven Pugh</td>
+          <td>Tech Arch</td>
+          <td class="num">98</td>
+          <td><div class="bar"><span style="width: 80%"></span></div></td>
+        </tr>
+        
+        <tr>
+          <td><span class="rank g3">3</span></td>
+          <td>Eve Jackson</td>
+          <td>Tech Arch</td>
+          <td class="num">94</td>
+          <td><div class="bar"><span style="width: 76%"></span></div></td>
+        </tr>
+        
+        <tr>
+          <td><span class="rank g">4</span></td>
+          <td>Adam Johnson</td>
+          <td>Developer</td>
+          <td class="num">67</td>
+          <td><div class="bar"><span style="width: 54%"></span></div></td>
+        </tr>
+        
+        <tr>
+          <td><span class="rank g">5</span></td>
+          <td>Steve Holden</td>
+          <td>Tech Arch</td>
+          <td class="num">67</td>
+          <td><div class="bar"><span style="width: 54%"></span></div></td>
+        </tr>
+        
+        <tr>
+          <td><span class="rank g">6</span></td>
+          <td>Jill Smith</td>
+          <td>DM</td>
+          <td class="num">50</td>
+          <td><div class="bar"><span style="width: 41%"></span></div></td>
+        </tr>
+        
+      </table>
+    </section>
+
+    
+    <section data-level="detail">
+      <h2>Every player</h2>
+      
+      <details>
+        <summary>
+          <span class="rank g1">1</span>
+          John Johnson
+          <span class="pts">123 pts</span>
+        </summary>
+        <div class="facts">
+          <div>Occupation<b>Developer</b></div>
+          <div>Rank<b>1 of 6</b></div>
+          <div>Points<b>123</b></div>
+          <div>Share of total<b>24.6%</b></div>
+          <div>Gap to leader<b>0</b></div>
+        </div>
+      </details>
+      
+      <details>
+        <summary>
+          <span class="rank g2">2</span>
+          Steven Pugh
+          <span class="pts">98 pts</span>
+        </summary>
+        <div class="facts">
+          <div>Occupation<b>Tech Arch</b></div>
+          <div>Rank<b>2 of 6</b></div>
+          <div>Points<b>98</b></div>
+          <div>Share of total<b>19.6%</b></div>
+          <div>Gap to leader<b>25</b></div>
+        </div>
+      </details>
+      
+      <details>
+        <summary>
+          <span class="rank g3">3</span>
+          Eve Jackson
+          <span class="pts">94 pts</span>
+        </summary>
+        <div class="facts">
+          <div>Occupation<b>Tech Arch</b></div>
+          <div>Rank<b>3 of 6</b></div>
+          <div>Points<b>94</b></div>
+          <div>Share of total<b>18.8%</b></div>
+          <div>Gap to leader<b>29</b></div>
+        </div>
+      </details>
+      
+      <details>
+        <summary>
+          <span class="rank g">4</span>
+          Adam Johnson
+          <span class="pts">67 pts</span>
+        </summary>
+        <div class="facts">
+          <div>Occupation<b>Developer</b></div>
+          <div>Rank<b>4 of 6</b></div>
+          <div>Points<b>67</b></div>
+          <div>Share of total<b>13.4%</b></div>
+          <div>Gap to leader<b>56</b></div>
+        </div>
+      </details>
+      
+      <details>
+        <summary>
+          <span class="rank g">5</span>
+          Steve Holden
+          <span class="pts">67 pts</span>
+        </summary>
+        <div class="facts">
+          <div>Occupation<b>Tech Arch</b></div>
+          <div>Rank<b>5 of 6</b></div>
+          <div>Points<b>67</b></div>
+          <div>Share of total<b>13.4%</b></div>
+          <div>Gap to leader<b>56</b></div>
+        </div>
+      </details>
+      
+      <details>
+        <summary>
+          <span class="rank g">6</span>
+          Jill Smith
+          <span class="pts">50 pts</span>
+        </summary>
+        <div class="facts">
+          <div>Occupation<b>DM</b></div>
+          <div>Rank<b>6 of 6</b></div>
+          <div>Points<b>50</b></div>
+          <div>Share of total<b>10.0%</b></div>
+          <div>Gap to leader<b>73</b></div>
+        </div>
+      </details>
+      
+    </section>
+
+    <footer>One source, three altitudes — generated from your spreadsheet via edjas. Switch level above; expand any player for detail.</footer>
+  </div>
+
+  <script>
+    var seg = document.querySelectorAll('.seg button');
+    seg.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.body.dataset.active = btn.dataset.level;
+        seg.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+      });
+    });
+  </script>
+</body>
+</html>

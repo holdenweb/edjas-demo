@@ -13,7 +13,8 @@
 </head>
 <body>
 
-  <!-- Two scalars pulled straight from the "Parameters" range -->
+  <!-- Scalars, some pulled straight from the "Parameters"
+       range, others from the (nested) "version" range. -->
   <h1>{{ name }} <small>v{{ version.number }}{% if version.name %} “{{ version.name }}”{% endif %}{% if version.build %} · build {{ version.build }}{% endif %}</small></h1>
 
   <!-- board_data is the "scoreboard" range: first row = headings, the rest = data -->

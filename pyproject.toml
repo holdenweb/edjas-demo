@@ -12,7 +12,7 @@ dependencies = [
     "jinja-cli (>=1.2.2,<2.0.0)",
     "flask (>=3.1.0,<4.0.0)",
     "openpyxl (>=3.1.5,<4.0.0)",
-    "edjas",
+    "edjas>=0.5.1",
 ]
 
 
@@ -24,6 +24,3 @@ build-backend = "poetry.core.masonry.api"
 dev = [
     "pytest>=9.1.1",
 ]
-
-[tool.uv.sources]
-edjas = { path = "../edjas", editable = true }

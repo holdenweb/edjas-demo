@@ -43,17 +43,15 @@ wheels = [
 
 [[package]]
 name = "edjas"
-version = "0.5.0"
-source = { editable = "../edjas" }
+version = "0.5.1"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "openpyxl" },
 ]
-
-[package.metadata]
-requires-dist = [{ name = "openpyxl", specifier = ">=3.1.5,<4.0.0" }]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8" }]
+sdist = { url = "https://files.pythonhosted.org/packages/7d/13/466ff600996ebb52bbfd7a0d1d9d605abeef75bab96b2a086818f2b8a40d/edjas-0.5.1.tar.gz", hash = "sha256:95a0b4c88d97a49011c198941a3ecb78d6499f4ace9172628a02bfd07929a30f", size = 364524, upload-time = "2026-06-28T08:48:44.537Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/75/c7/3662082ce0e9c518d104b90800f3fa1941cfb6800bcbce81ba2d353d4267/edjas-0.5.1-py3-none-any.whl", hash = "sha256:5160ee0f01c9e0067daba3b5c28a6536b994f6c985266864833b6888f9a419c2", size = 5739, upload-time = "2026-06-28T08:48:43.03Z" },
+]
 
 [[package]]
 name = "edjas-demo"
@@ -73,7 +71,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "edjas", editable = "../edjas" },
+    { name = "edjas", specifier = ">=0.5.1" },
     { name = "flask", specifier = ">=3.1.0,<4.0.0" },
     { name = "jinja-cli", specifier = ">=1.2.2,<2.0.0" },
     { name = "openpyxl", specifier = ">=3.1.5,<4.0.0" },
