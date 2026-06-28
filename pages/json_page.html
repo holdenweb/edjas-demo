@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>edjas data — __SOURCE__</title>
+<style>
+ :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#0f766e; --bg:#fafafa; }
+ * { box-sizing: border-box; }
+ body { font-family: system-ui, sans-serif; color: var(--ink); margin: 0; background: var(--bg); }
+ .wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+ header { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: baseline; justify-content: space-between; }
+ h1 { font-size: 1.4rem; margin: 0; }
+ h1 small { color: var(--muted); font-weight: normal; font-size: 0.95rem; }
+ .home { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+ .home:hover { text-decoration: underline; }
+ .controls { display: flex; gap: 0.5rem; align-items: center; margin: 1rem 0 1.25rem; }
+ .controls button, .controls a.btn { font: inherit; font-size: 0.82rem; border: 1px solid var(--line); background: #fff; color: var(--ink); padding: 0.35rem 0.7rem; border-radius: 7px; cursor: pointer; text-decoration: none; }
+ .controls button:hover, .controls a.btn:hover { border-color: var(--accent); color: var(--accent); }
+ .tree { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; font: 0.85rem/1.7 ui-monospace, Menlo, monospace; overflow-x: auto; }
+ .tree summary { cursor: pointer; list-style: none; }
+ .tree summary::-webkit-details-marker { display: none; }
+ .tree summary::before { content: '▸'; color: var(--muted); display: inline-block; width: 1rem; }
+ .tree details[open] > summary::before { content: '▾'; }
+ .tree .children { margin-left: 1.1rem; border-left: 1px solid var(--line); padding-left: 0.7rem; }
+ .tree .leaf { padding-left: 1rem; }
+ .tree .key { color: #9333ea; }
+ .tree .idx { color: var(--muted); }
+ .tree .punc { color: var(--muted); }
+ .tree .meta { color: var(--muted); font-style: italic; font-size: 0.8rem; }
+ .tree .str { color: #0f766e; }
+ .tree .num { color: #2563eb; }
+ .tree .bool { color: #b45309; }
+ .tree .null { color: #9ca3af; }
+ footer { margin-top: 1.5rem; font-size: 0.8rem; color: var(--muted); }
+</style>
+</head>
+<body>
+ <div class="wrap">
+  <header>
+   <h1>Extracted data <small>__SOURCE__</small></h1>
+   <a class="home" href="/">← edjas demos</a>
+  </header>
+  <div class="controls">
+   <button type="button" onclick="setAll(true)">Expand all</button>
+   <button type="button" onclick="setAll(false)">Collapse all</button>
+   <a class="btn" href="data.json">Raw JSON ↗</a>
+  </div>
+  <div class="tree" id="tree">__TREE__</div>
+  <footer>This is exactly what edjas hands to the templates — edit the spreadsheet and this view refreshes itself.</footer>
+ </div>
+ <script>
+  function setAll(open) {
+    document.querySelectorAll('#tree details').forEach(function (d) { d.open = open; });
+  }
+ </script>
+</body>
+</html>

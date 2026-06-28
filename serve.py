@@ -1,12 +1,13 @@
 """Live demo server for edjas.
 
-Renders the Jinja templates in the templates directory on every request, using
-data that edjas extracts from the workbook, and auto-refreshes the browser
-whenever a source the page depends on — the spreadsheet or any template —
-changes on disk. It lets you experiment with templates and edit the workbook
-and watch the rendered page update, without re-running ``make`` or reloading
-the tab by hand. The ``/data`` page shows the extracted JSON as a collapsible
-tree for comprehension and discussion.
+Renders the Jinja templates in the templates directory on the fly from an
+in-memory copy of the data that edjas extracts from the workbook. Uploading a
+new spreadsheet on the ``/upload`` page re-parses it in memory and updates every
+open page; a template upload is written into the templates directory. The
+browser also auto-refreshes whenever a watched file changes on disk, so you can
+experiment with templates and edit the workbook and watch the rendered page
+update without re-running ``make`` or reloading the tab. The ``/data`` page
+shows the extracted JSON as a collapsible tree for comprehension and discussion.
 
 Run it with::
 
@@ -17,18 +18,28 @@ then open http://127.0.0.1:8042/.
 
 import argparse
 import hashlib
+import io
 import json
 import math
 import re
+import threading
 import time
 from pathlib import Path
 
-from flask import Flask, Response, abort, render_template
+from flask import Flask, Response, abort, render_template, request
 from markupsafe import escape
+from werkzeug.utils import secure_filename
 
 from edjas.read_params import read_file
 
 BASE = Path(__file__).resolve().parent
+PAGES_DIR = BASE / "pages"
+
+
+def _read_page(name):
+    """Load a server page's HTML chrome from the pages/ directory."""
+    return (PAGES_DIR / name).read_text(encoding="utf-8")
+
 
 # The browser polls this path; its value is a digest of the watched sources,
 # so it changes whenever any of them is saved.
@@ -42,6 +53,27 @@ TEMPLATE_DIR = BASE / "templates"
 app = Flask(__name__, template_folder=str(TEMPLATE_DIR))
 # Re-read templates from disk on every render so edits show up live.
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+# Cap upload size; remember which extensions the upload page accepts.
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16 MB
+ALLOWED_SHEET_EXT = {".xlsx", ".xlsm"}
+ALLOWED_TEMPLATE_EXT = {".html"}
+
+# ---------------------------------------------------------------------------
+# In-memory workbook data
+#
+# The extracted workbook dict lives in memory and is the single source the
+# pages render from. It is replaced when a spreadsheet is uploaded (parsed in
+# memory — no temp file) and re-read when the on-disk workbook changes while it
+# is still the active source. A generation counter lets the live-reload poller
+# notice in-memory updates that touch no watched file. Access is guarded by a
+# lock because Flask serves requests on multiple threads (threaded=True).
+# ---------------------------------------------------------------------------
+_STATE_LOCK = threading.Lock()
+_DATA = None                        # cached extracted dict, or None before first load
+_DATA_VERSION = 0                   # bumped on every successful data replacement
+_DATA_SOURCE = "disk"               # "disk" (startup workbook) or "upload"
+_DATA_SOURCE_LABEL = DATA_FILE.name  # name shown on the JSON / upload pages
+_DISK_MTIME = None                  # (st_mtime_ns, st_size) of DATA_FILE at last read
 
 
 def build_reload_snippet(interval_ms):
@@ -77,14 +109,23 @@ RELOAD_SNIPPET = build_reload_snippet(1000)
 
 
 def watched_paths():
-    """The sources a rendered page is built from: the workbook and every template."""
-    return [DATA_FILE, *sorted(TEMPLATE_DIR.glob("*.html"))]
+    """On-disk files whose edits should refresh pages: templates always, plus the
+    startup workbook while it is still the active source (an upload supersedes it)."""
+    paths = sorted(TEMPLATE_DIR.glob("*.html"))
+    if _DATA_SOURCE == "disk":
+        paths.insert(0, DATA_FILE)
+    return paths
 
 
 def fingerprint():
-    """A digest of the watched files' mtimes and sizes — changes on any saved edit."""
+    """A digest that changes on anything the open pages depend on: the in-memory
+    data generation (so uploads and disk re-reads, which touch no watched file,
+    are noticed) plus the watched files' mtimes and sizes."""
     digest = hashlib.sha1()
-    for path in watched_paths():
+    with _STATE_LOCK:
+        digest.update(f"v:{_DATA_VERSION}:{_DATA_SOURCE}".encode())
+        paths = watched_paths()
+    for path in paths:
         try:
             stat = path.stat()
             digest.update(f"{path.name}:{stat.st_mtime_ns}:{stat.st_size}".encode())
@@ -93,17 +134,53 @@ def fingerprint():
     return digest.hexdigest()
 
 
-def load_data():
-    """Extract the workbook, retrying briefly to ride out a mid-save read race."""
+def _read_workbook(path):
+    """Extract a workbook from a path, retrying briefly to ride out a mid-save
+    read race. (Only paths retry; an in-memory upload is parsed once directly.)"""
     last_exc = None
     for attempt in range(3):
         try:
-            return read_file(str(DATA_FILE), RANGE_NAME)
+            return read_file(path, RANGE_NAME)
         except Exception as exc:  # noqa: BLE001 — surface any read/parse failure
             last_exc = exc
             if attempt < 2:
                 time.sleep(0.1)
     raise last_exc
+
+
+def _read_disk_into_state():
+    """Load the on-disk workbook into the in-memory state. Caller holds _STATE_LOCK."""
+    global _DATA, _DATA_VERSION, _DATA_SOURCE_LABEL, _DISK_MTIME
+    data = _read_workbook(str(DATA_FILE))  # may raise; leaves state untouched on failure
+    stat = DATA_FILE.stat()
+    _DATA = data
+    _DISK_MTIME = (stat.st_mtime_ns, stat.st_size)
+    _DATA_SOURCE_LABEL = DATA_FILE.name
+    _DATA_VERSION += 1
+
+
+def _set_uploaded_data(new_data, label):
+    """Make an uploaded workbook the live in-memory data. Caller holds _STATE_LOCK."""
+    global _DATA, _DATA_VERSION, _DATA_SOURCE, _DATA_SOURCE_LABEL
+    _DATA = new_data
+    _DATA_SOURCE = "upload"
+    _DATA_SOURCE_LABEL = label
+    _DATA_VERSION += 1
+
+
+def load_data():
+    """Return the in-memory workbook data, lazily (re-)reading the disk workbook
+    when it is the active source and has changed (or nothing is cached yet)."""
+    with _STATE_LOCK:
+        if _DATA_SOURCE == "disk":
+            try:
+                stat = DATA_FILE.stat()
+                fresh = (stat.st_mtime_ns, stat.st_size)
+            except FileNotFoundError:
+                fresh = None
+            if _DATA is None or (fresh is not None and fresh != _DISK_MTIME):
+                _read_disk_into_state()
+        return _DATA
 
 
 def error_response(exc):
@@ -186,79 +263,61 @@ def render_node(value, prefix=""):
     return f'<div class="leaf">{prefix}{_leaf_html(value)}</div>'
 
 
-# Token-replaced (not f-string/.format) so the CSS braces need no escaping.
-JSON_PAGE = """<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>edjas data — __SOURCE__</title>
-<style>
- :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#0f766e; --bg:#fafafa; }
- * { box-sizing: border-box; }
- body { font-family: system-ui, sans-serif; color: var(--ink); margin: 0; background: var(--bg); }
- .wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
- header { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: baseline; justify-content: space-between; }
- h1 { font-size: 1.4rem; margin: 0; }
- h1 small { color: var(--muted); font-weight: normal; font-size: 0.95rem; }
- .home { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
- .home:hover { text-decoration: underline; }
- .controls { display: flex; gap: 0.5rem; align-items: center; margin: 1rem 0 1.25rem; }
- .controls button, .controls a.btn { font: inherit; font-size: 0.82rem; border: 1px solid var(--line); background: #fff; color: var(--ink); padding: 0.35rem 0.7rem; border-radius: 7px; cursor: pointer; text-decoration: none; }
- .controls button:hover, .controls a.btn:hover { border-color: var(--accent); color: var(--accent); }
- .tree { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; font: 0.85rem/1.7 ui-monospace, Menlo, monospace; overflow-x: auto; }
- .tree summary { cursor: pointer; list-style: none; }
- .tree summary::-webkit-details-marker { display: none; }
- .tree summary::before { content: '▸'; color: var(--muted); display: inline-block; width: 1rem; }
- .tree details[open] > summary::before { content: '▾'; }
- .tree .children { margin-left: 1.1rem; border-left: 1px solid var(--line); padding-left: 0.7rem; }
- .tree .leaf { padding-left: 1rem; }
- .tree .key { color: #9333ea; }
- .tree .idx { color: var(--muted); }
- .tree .punc { color: var(--muted); }
- .tree .meta { color: var(--muted); font-style: italic; font-size: 0.8rem; }
- .tree .str { color: #0f766e; }
- .tree .num { color: #2563eb; }
- .tree .bool { color: #b45309; }
- .tree .null { color: #9ca3af; }
- footer { margin-top: 1.5rem; font-size: 0.8rem; color: var(--muted); }
-</style>
-</head>
-<body>
- <div class="wrap">
-  <header>
-   <h1>Extracted data <small>__SOURCE__</small></h1>
-   <a class="home" href="/">← edjas demos</a>
-  </header>
-  <div class="controls">
-   <button type="button" onclick="setAll(true)">Expand all</button>
-   <button type="button" onclick="setAll(false)">Collapse all</button>
-   <a class="btn" href="data.json">Raw JSON ↗</a>
-  </div>
-  <div class="tree" id="tree">__TREE__</div>
-  <footer>This is exactly what edjas hands to the templates — edit the spreadsheet and this view refreshes itself.</footer>
- </div>
- <script>
-  function setAll(open) {
-    document.querySelectorAll('#tree details').forEach(function (d) { d.open = open; });
-  }
- </script>
-</body>
-</html>
-"""
+# Page chrome lives in pages/json_page.html; json_page_html() fills the
+# __SOURCE__ and __TREE__ tokens.
+JSON_PAGE = _read_page("json_page.html")
 
 
 def json_page_html(data):
     """Wrap the rendered tree in the viewer page chrome.
 
     A single regex pass maps each token exactly once, so inserted text — the
-    filename or the tree — is never re-scanned for the other token.
+    source label or the tree — is never re-scanned for the other token.
     """
     replacements = {
-        "__SOURCE__": str(escape(DATA_FILE.name)),
+        "__SOURCE__": str(escape(_DATA_SOURCE_LABEL)),
         "__TREE__": render_node(data),
     }
     return re.sub(r"__SOURCE__|__TREE__", lambda m: replacements[m.group(0)], JSON_PAGE)
+
+
+# ---------------------------------------------------------------------------
+# Upload page
+# ---------------------------------------------------------------------------
+
+# Page chrome lives in pages/upload_page.html; upload_page_html() fills the
+# __MESSAGES__, __SHEET__, __TEMPLATES_DIR__ and __TEMPLATE_LIST__ tokens.
+UPLOAD_PAGE = _read_page("upload_page.html")
+
+
+def upload_page_html(messages=None):
+    """Render the upload form, with any result notices and the current state."""
+    notices = "".join(
+        f'<div class="notice {level}">{text}</div>' for level, text in (messages or [])
+    )
+    template_list = ", ".join(sorted(p.name for p in TEMPLATE_DIR.glob("*.html"))) or "(none)"
+    replacements = {
+        "__MESSAGES__": notices,
+        "__SHEET__": str(escape(_DATA_SOURCE_LABEL)),
+        "__TEMPLATES_DIR__": str(escape(str(TEMPLATE_DIR))),
+        "__TEMPLATE_LIST__": str(escape(template_list)),
+    }
+    return re.sub("|".join(replacements), lambda m: replacements[m.group(0)], UPLOAD_PAGE)
+
+
+def safe_upload_name(original, ext, default_stem):
+    """A safe on-disk name carrying the already-validated, lowercased extension.
+
+    secure_filename strips a non-ASCII base name down to the bare extension
+    token (e.g. 'データ.html' -> 'html'), so fall back to a default stem when
+    that happens. The extension is always normalised to ``ext`` (lowercase) so
+    the saved file, the ``/<page>.html`` route and the success link all agree —
+    an uppercase 'Report.HTML' would otherwise be unreachable and unwatched.
+    """
+    secured = secure_filename(original)
+    if not secured or Path(secured).suffix.lower() != ext:
+        return f"{default_stem}{ext}"
+    return f"{Path(secured).stem}{ext}"
 
 
 # ---------------------------------------------------------------------------
@@ -319,6 +378,55 @@ def data_json():
     return Response(payload, mimetype="application/json")
 
 
+@app.route("/upload", methods=["GET", "POST"])
+def upload():
+    """Upload a new workbook — parsed in memory, becomes the live data — and/or a
+    template, written into the templates directory."""
+    if request.method == "GET":
+        return Response(upload_page_html(), mimetype="text/html")
+
+    messages = []
+    sheet = request.files.get("spreadsheet")
+    tmpl = request.files.get("template")
+
+    if sheet and sheet.filename:
+        ext = Path(sheet.filename).suffix.lower()
+        if ext not in ALLOWED_SHEET_EXT:
+            messages.append(("error", f"Spreadsheet must be .xlsx or .xlsm — got “{escape(sheet.filename)}”."))
+        else:
+            try:  # parsing the bytes IS the validation — no temp file, no disk write
+                new_data = read_file(io.BytesIO(sheet.read()), RANGE_NAME)
+            except Exception as exc:  # noqa: BLE001
+                messages.append(("error", f"Couldn’t read that workbook, keeping the current one: {escape(str(exc))}"))
+            else:
+                with _STATE_LOCK:
+                    _set_uploaded_data(new_data, sheet.filename)
+                messages.append(("ok", f"Now serving data from “{escape(sheet.filename)}” — the demos and <a href=\"data\">JSON</a> have updated."))
+
+    if tmpl and tmpl.filename:
+        ext = Path(tmpl.filename).suffix.lower()
+        if ext not in ALLOWED_TEMPLATE_EXT:
+            messages.append(("error", f"Template must be a .html file — got “{escape(tmpl.filename)}”."))
+        else:
+            source = tmpl.read().decode("utf-8", errors="replace")
+            try:  # syntax-check before writing so a broken upload can't clobber a page
+                app.jinja_env.parse(source)
+            except Exception as exc:  # noqa: BLE001
+                messages.append(("error", f"Template has a Jinja syntax error, not saved: {escape(str(exc))}"))
+            else:
+                name = safe_upload_name(tmpl.filename, ext, "template")
+                dest = TEMPLATE_DIR / name
+                verb = "Replaced" if dest.exists() else "Added"
+                dest.write_text(source, encoding="utf-8")
+                stem = escape(Path(name).stem)
+                messages.append(("ok", f"{verb} template “{escape(name)}” — view it at <a href=\"{stem}.html\">/{stem}.html</a>."))
+
+    if not messages:
+        messages.append(("info", "Choose a spreadsheet and/or a template file, then press Upload."))
+
+    return Response(upload_page_html(messages), mimetype="text/html")
+
+
 @app.route(LIVE_PATH)
 def live():
     return Response(fingerprint(), mimetype="text/plain")
@@ -339,7 +447,7 @@ def add_live_reload(response):
 
 
 def main():
-    global DATA_FILE, RANGE_NAME, TEMPLATE_DIR, RELOAD_SNIPPET
+    global DATA_FILE, RANGE_NAME, TEMPLATE_DIR, RELOAD_SNIPPET, _DATA_SOURCE_LABEL
     parser = argparse.ArgumentParser(description="Live edjas demo server.")
     parser.add_argument("spreadsheet", help="source workbook to extract and serve")
     parser.add_argument(
@@ -362,6 +470,7 @@ def main():
         parser.error("--frequency must be a positive number of seconds")
 
     DATA_FILE = Path(args.spreadsheet).resolve()
+    _DATA_SOURCE_LABEL = DATA_FILE.name
     RANGE_NAME = args.range_name
     TEMPLATE_DIR = Path(args.templates).resolve()
     if not TEMPLATE_DIR.is_dir():

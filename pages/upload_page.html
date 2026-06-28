@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>edjas — upload</title>
+<style>
+ :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#0f766e; --bg:#fafafa; }
+ * { box-sizing: border-box; }
+ body { font-family: system-ui, sans-serif; color: var(--ink); margin: 0; background: var(--bg); }
+ .wrap { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+ header { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: baseline; justify-content: space-between; }
+ h1 { font-size: 1.5rem; margin: 0; }
+ .home { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+ .home:hover { text-decoration: underline; }
+ p.lede { color: var(--muted); margin: 0.4rem 0 1.5rem; }
+ form { display: grid; gap: 1.1rem; }
+ fieldset { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.2rem 1.2rem; background: #fff; }
+ legend { font-weight: 600; padding: 0 0.4rem; }
+ fieldset p { margin: 0.2rem 0 0.7rem; color: var(--muted); font-size: 0.9rem; }
+ code { background: #eef2f1; padding: 0.05rem 0.3rem; border-radius: 4px; }
+ input[type=file] { font: inherit; font-size: 0.9rem; max-width: 100%; }
+ button { justify-self: start; font: inherit; font-weight: 600; background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 0.6rem 1.2rem; cursor: pointer; }
+ button:hover { background: #0b5d56; }
+ .notices:empty { display: none; }
+ .notices { margin-bottom: 1.2rem; display: grid; gap: 0.6rem; }
+ .notice { border-radius: 8px; padding: 0.6rem 0.85rem; font-size: 0.92rem; border: 1px solid; }
+ .notice.ok { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+ .notice.error { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+ .notice.info { background: #f8fafc; border-color: var(--line); color: var(--muted); }
+ .notice a { color: inherit; font-weight: 600; }
+ footer { margin-top: 1.6rem; font-size: 0.82rem; color: var(--muted); }
+ footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+ <div class="wrap">
+  <header>
+   <h1>Upload</h1>
+   <a class="home" href="/">← edjas demos</a>
+  </header>
+  <p class="lede">Drop in a new spreadsheet to render, a new template to try, or both — either field is optional.</p>
+  <div class="notices">__MESSAGES__</div>
+  <form method="post" enctype="multipart/form-data">
+   <fieldset>
+    <legend>Spreadsheet</legend>
+    <p>Currently serving <code>__SHEET__</code>. A new <code>.xlsx</code> becomes the live data for every page.</p>
+    <input type="file" name="spreadsheet" accept=".xlsx,.xlsm">
+   </fieldset>
+   <fieldset>
+    <legend>Template</legend>
+    <p>Saved into <code>__TEMPLATES_DIR__</code> and served at <code>/&lt;name&gt;.html</code>.<br>Existing: __TEMPLATE_LIST__</p>
+    <input type="file" name="template" accept=".html">
+   </fieldset>
+   <button type="submit">Upload</button>
+  </form>
+  <footer>Then see the <a href="data">extracted JSON</a> or open a <a href="/">demo</a>.</footer>
+ </div>
+</body>
+</html>
