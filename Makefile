@@ -22,3 +22,10 @@ $(TARGET)/%.html.txt: $(JINJA)/%.html
 
 # The landing page links to those source copies, so build them alongside it.
 $(TARGET)/index.html: $(TARGET)/simple.html.txt $(TARGET)/levels.html.txt $(TARGET)/dashboard.html.txt
+
+# Live demo server: renders the templates on the fly and auto-refreshes the
+# browser whenever the spreadsheet or a template changes. Good for trying out
+# template edits and seeing spreadsheet changes without rebuilding.
+.PHONY: serve
+serve:
+	uv run python serve.py demo_data.xlsx
