@@ -12,7 +12,7 @@ import openpyxl
 from openpyxl.workbook.defined_name import DefinedName
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-WORKBOOK = os.path.join(ROOT, "demo_data.xlsx")
+WORKBOOK = os.path.join(ROOT, "data", "demo_data.xlsx")
 
 wb = openpyxl.load_workbook(WORKBOOK)
 ws = wb["Sheet1"]

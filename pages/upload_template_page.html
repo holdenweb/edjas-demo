@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>edjas — upload template</title>
+<style>
+ :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#0f766e; --bg:#fafafa; }
+ * { box-sizing: border-box; }
+ body { font-family: system-ui, sans-serif; color: var(--ink); margin: 0; background: var(--bg); }
+ .wrap { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+ header { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: baseline; justify-content: space-between; }
+ h1 { font-size: 1.5rem; margin: 0; }
+ .home { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+ .home:hover { text-decoration: underline; }
+ p.lede { color: var(--muted); margin: 0.4rem 0 1.5rem; }
+ form { display: grid; gap: 1.1rem; }
+ fieldset { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.2rem 1.2rem; background: #fff; }
+ legend { font-weight: 600; padding: 0 0.4rem; }
+ fieldset p { margin: 0.2rem 0 0.7rem; color: var(--muted); font-size: 0.9rem; }
+ code { background: #eef2f1; padding: 0.05rem 0.3rem; border-radius: 4px; }
+ input[type=file] { font: inherit; font-size: 0.9rem; max-width: 100%; }
+ label { display: block; color: var(--muted); font-size: 0.85rem; margin-top: 0.7rem; }
+ select, input[type=text] { display: block; width: 100%; margin-top: 0.25rem; font: inherit; padding: 0.4rem; border: 1px solid #d1d5db; border-radius: 6px; }
+ button { justify-self: start; font: inherit; font-weight: 600; background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 0.6rem 1.2rem; cursor: pointer; }
+ button:hover { background: #0b5d56; }
+ .notices:empty { display: none; }
+ .notices { margin-bottom: 1.2rem; display: grid; gap: 0.6rem; }
+ .notice { border-radius: 8px; padding: 0.6rem 0.85rem; font-size: 0.92rem; border: 1px solid; }
+ .notice.ok { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+ .notice.error { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+ .notice.info { background: #f8fafc; border-color: var(--line); color: var(--muted); }
+ .notice a { color: inherit; font-weight: 600; }
+ footer { margin-top: 1.6rem; font-size: 0.82rem; color: var(--muted); }
+ footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+ <div class="wrap">
+  <header>
+   <h1>Upload template</h1>
+   <a class="home" href="/">← edjas demos</a>
+  </header>
+  <p class="lede">Add a <code>.html</code> template to a set. Choose an existing set or name a new one; it is served at <code>/&lt;name&gt;.html</code> when that set is selected.</p>
+  <div class="notices">__MESSAGES__</div>
+  <form method="post" enctype="multipart/form-data">
+   <fieldset>
+    <legend>Template</legend>
+    <input type="file" name="template" accept=".html">
+   </fieldset>
+   <fieldset>
+    <legend>Target set</legend>
+    <p>Current set: <code>__CURRENT_SET__</code>. Existing: __SETS_LIST__</p>
+    <label>Existing set
+     <select name="set">
+      <option value="">— current (__CURRENT_SET__) —</option>
+      __SET_OPTIONS__
+     </select>
+    </label>
+    <label>…or a new set
+     <input type="text" name="new_set" placeholder="e.g. fancy">
+    </label>
+   </fieldset>
+   <button type="submit">Upload</button>
+  </form>
+  <footer>Switch sets anytime from the sidebar. Upload <a href="/upload/data">data</a> instead, or open a <a href="/">demo</a>.</footer>
+ </div>
+</body>
+</html>

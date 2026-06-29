@@ -51,8 +51,8 @@
           <a class="go" href="{{ d.file }}.html">View →</a>
         </div>
         <p>{{ d.desc }}</p>
-        <p class="src">Source: <a href="{{ d.file }}.html.txt"><code>templates/{{ d.file }}.html</code></a></p>
-        <pre class="cmd">uv run edjas demo_data.xlsx | uv run jinja -d - -f json templates/{{ d.file }}.html > out/{{ d.file }}.html</pre>
+        <p class="src">Source: <a href="{{ d.file }}.html.txt"><code>sets/default/{{ d.file }}.html</code></a></p>
+        <pre class="cmd">uv run edjas data/demo_data.xlsx | uv run jinja -d - -f json sets/default/{{ d.file }}.html > out/{{ d.file }}.html</pre>
       </div>
       {% endfor %}
     </div>
@@ -60,7 +60,8 @@
     {% if live %}
     <p class="inspect">
       <a href="data">Inspect the JSON edjas extracted from {{ name }} →</a><br>
-      <a href="upload">Upload a new spreadsheet or template →</a>
+      <a href="upload/template">Upload a template →</a> ·
+      <a href="upload/data">Upload data →</a>
     </p>
     {% endif %}
 

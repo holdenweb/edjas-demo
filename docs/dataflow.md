@@ -31,7 +31,7 @@ flowchart LR
     author -- "annotate:<br/>named ranges + { } / [ ] markup" --> wb
 
     subgraph source [EDJAS data source]
-        wb[(Excel workbook<br/>demo_data.xlsx)]:::store
+        wb[(Excel workbook<br/>data/demo_data.xlsx)]:::store
     end
 
     %% ---- Extraction: the source-agnostic boundary ----

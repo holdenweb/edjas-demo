@@ -16,14 +16,14 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def env():
     # autoescape off to match the jinja CLI used by the Makefile.
     return jinja2.Environment(
-        loader=jinja2.FileSystemLoader(os.path.join(ROOT, "templates")),
+        loader=jinja2.FileSystemLoader(os.path.join(ROOT, "sets", "default")),
         autoescape=False,
     )
 
 
 @pytest.fixture(scope="session")
 def data():
-    return read_file(os.path.join(ROOT, "demo_data.xlsx"))
+    return read_file(os.path.join(ROOT, "data", "demo_data.xlsx"))
 
 
 @pytest.fixture

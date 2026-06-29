@@ -1,5 +1,5 @@
 # Define the directories
-JINJA = templates
+JINJA = sets/default
 TARGET = out
 
 # Default target: bring all generated documentation (the demo pages, with their
@@ -8,9 +8,9 @@ TARGET = out
 docs: $(TARGET)/index.html $(TARGET)/simple.html $(TARGET)/levels.html $(TARGET)/dashboard.html
 
 # General rule to convert jinja2 templates to.html files
-$(TARGET)/%.html: $(JINJA)/%.html demo_data.xlsx
+$(TARGET)/%.html: $(JINJA)/%.html data/demo_data.xlsx
 
-	uv run edjas demo_data.xlsx \
+	uv run edjas data/demo_data.xlsx \
 	| uv run jinja -d - -f json $< > $@
 
 # Plain-text copies of the templates, served as text/plain so the index's
@@ -23,9 +23,9 @@ $(TARGET)/%.html.txt: $(JINJA)/%.html
 # The landing page links to those source copies, so build them alongside it.
 $(TARGET)/index.html: $(TARGET)/simple.html.txt $(TARGET)/levels.html.txt $(TARGET)/dashboard.html.txt
 
-# Live demo server: renders the templates on the fly and auto-refreshes the
-# browser whenever the spreadsheet or a template changes. Good for trying out
-# template edits and seeing spreadsheet changes without rebuilding.
+# Live demo server: renders the currently-selected template set + spreadsheet on
+# the fly, with a sidebar to switch sets/data and auto-refresh on edits. Sets live
+# under sets/<name>/ and spreadsheets under data/.
 .PHONY: serve
 serve:
-	uv run python serve.py demo_data.xlsx
+	uv run python serve.py

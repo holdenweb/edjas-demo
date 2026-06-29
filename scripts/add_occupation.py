@@ -12,7 +12,7 @@ import random
 import openpyxl
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-WORKBOOK = os.path.join(ROOT, "demo_data.xlsx")
+WORKBOOK = os.path.join(ROOT, "data", "demo_data.xlsx")
 OCCUPATIONS = ["Tech Arch", "Developer", "DM"]
 
 random.seed(20260625)

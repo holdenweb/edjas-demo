@@ -18,15 +18,15 @@ def test_links_to_sources(render, data):
     for d in DEMOS:
         # link to a plain-text copy so the browser shows source, not a render
         assert f'href="{d}.html.txt"' in html
-        assert f"templates/{d}.html" in html  # link text still names the source
+        assert f"sets/default/{d}.html" in html  # link text still names the source
 
 
 def test_shows_generating_command(render, data):
     html = render("index.html", data)
     for d in DEMOS:
         assert (
-            f"uv run edjas demo_data.xlsx | "
-            f"uv run jinja -d - -f json templates/{d}.html > out/{d}.html"
+            f"uv run edjas data/demo_data.xlsx | "
+            f"uv run jinja -d - -f json sets/default/{d}.html > out/{d}.html"
         ) in html
 
 

@@ -7,11 +7,11 @@ as an Excel `.xlsx` file.
 
 ## How it works
 
-The generation process is driven by the `templates` directory,
-which contains a collection of jinja2 HTML template files. (If you'd
+The generation process is driven by a *template set* — a folder of jinja2 HTML
+template files under `sets/` (the `default` set here). (If you'd
 like to see the templates they are linked from the demo).
 A diagram of the process appears below, from which you can see
-that EDJAS processes the same `demo_data.xlsx` spreadsheet using three different
+that EDJAS processes the same `data/demo_data.xlsx` spreadsheet using three different
 templates to produce three separate web pages.
 
 ![edjas-demo processing](docs/images/demo_process.png "The processing chain is quite direct")
@@ -80,11 +80,11 @@ The following command shows how to create the corresponding
 output file in the `out` directory.
 
 ```
-uv run edjas demo_data.xlsx \
-| uv run jinja -d - -f json template/levels.html > out/levels.html
+uv run edjas data/demo_data.xlsx \
+| uv run jinja -d - -f json sets/default/levels.html > out/levels.html
 ```
 
-The first part (`uv run edjas demo_data.xlsx`) extracts the data from the spreadsheet.
+The first part (`uv run edjas data/demo_data.xlsx`) extracts the data from the spreadsheet.
 The second injects that data into a web page template to create a page that includes
 the spreadsheet data it selects.
 This is, in fact, what happens when you type
@@ -103,8 +103,16 @@ The initial display mode depends on the `detail` parameter.
 The dashboard view is hopefully self-explanatory.
 
 If you'd like to understand how the spreadsheet data is injected into the templates,
-`templates/simple.html` is a good starting point.
+`sets/default/simple.html` is a good starting point.
 The demo page links to each page's template for easy examination.
+
+## Live demo server
+
+`make serve` (or `uv run python serve.py`) runs a small Flask server that renders the
+pages on the fly. Template sets live under `sets/<name>/` and data spreadsheets under
+`data/`; a collapsible sidebar on every page switches the current set and spreadsheet
+and the pages update live. Separate pages upload a new template (into a set) or a new
+spreadsheet (into `data/`), and `/data` shows the extracted JSON as a collapsible tree.
 
 ## Summary
 

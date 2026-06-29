@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>edjas — upload</title>
+<title>edjas — upload data</title>
 <style>
  :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#0f766e; --bg:#fafafa; }
  * { box-sizing: border-box; }
@@ -36,25 +36,20 @@
 <body>
  <div class="wrap">
   <header>
-   <h1>Upload</h1>
+   <h1>Upload data</h1>
    <a class="home" href="/">← edjas demos</a>
   </header>
-  <p class="lede">Drop in a new spreadsheet to render, a new template to try, or both — either field is optional.</p>
+  <p class="lede">Add a spreadsheet to the data folder. It is parsed to validate it, saved, and becomes the current data.</p>
   <div class="notices">__MESSAGES__</div>
   <form method="post" enctype="multipart/form-data">
    <fieldset>
     <legend>Spreadsheet</legend>
-    <p>Currently serving <code>__SHEET__</code>. A new <code>.xlsx</code> becomes the live data for every page.</p>
+    <p>Current data: <code>__CURRENT__</code>. Saved into <code>__DATA_DIR__</code>.<br>Available: __DATA_LIST__</p>
     <input type="file" name="spreadsheet" accept=".xlsx,.xlsm">
-   </fieldset>
-   <fieldset>
-    <legend>Template</legend>
-    <p>Saved into <code>__TEMPLATES_DIR__</code> and served at <code>/&lt;name&gt;.html</code>.<br>Existing: __TEMPLATE_LIST__</p>
-    <input type="file" name="template" accept=".html">
    </fieldset>
    <button type="submit">Upload</button>
   </form>
-  <footer>Then see the <a href="data">extracted JSON</a> or open a <a href="/">demo</a>.</footer>
+  <footer>Switch data anytime from the sidebar. Upload a <a href="/upload/template">template</a> instead, or open a <a href="/">demo</a>.</footer>
  </div>
 </body>
 </html>
