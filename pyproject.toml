@@ -1,6 +1,6 @@
 [project]
 name = "edjas-demo"
-version = "0.4.0a1"
+version = "0.4.0"
 description = "Demonstration web site for EDJAS"
 authors = [
     {name = "Steve Holden",email = "steve@holdenweb.com"}

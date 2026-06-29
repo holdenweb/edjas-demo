@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tables Demo v1.0.2 — report</title>
+  <title>Tables Demo v1.0.3 — report</title>
   <style>
     :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#0f766e; --accent-soft:#ccfbf1; }
     * { box-sizing: border-box; }
@@ -70,7 +70,7 @@
 <body data-active="executive">
   <div class="wrap">
     <header>
-      <h1>Tables Demo <small>v1.0.2 “weasel” · build 20260625-1</small></h1>
+      <h1>Tables Demo <small>v1.0.3 “ferret” · build 20260625-1</small></h1>
       <div class="seg" role="group" aria-label="Level of detail">
         <button data-level="executive" aria-pressed="true">Executive</button>
         <button data-level="summary"   aria-pressed="false">Summary</button>
@@ -82,10 +82,10 @@
     <section data-level="executive">
       <h2>At a glance</h2>
       <div class="cards">
-        <div class="card"><div class="label">Players</div><div class="value">6</div></div>
-        <div class="card"><div class="label">Average points</div><div class="value">83</div></div>
+        <div class="card"><div class="label">Players</div><div class="value">5</div></div>
+        <div class="card"><div class="label">Average points</div><div class="value">81</div></div>
         <div class="card"><div class="label">High score</div><div class="value">123</div></div>
-        <div class="card"><div class="label">Total points</div><div class="value">499</div></div>
+        <div class="card"><div class="label">Total points</div><div class="value">405</div></div>
         <div class="card"><div class="label">Leader</div><div class="value name">John Johnson</div></div>
       </div>
 
@@ -101,14 +101,14 @@
         
         <tr>
           <td>DM</td>
-          <td class="num">1</td>
-          <td class="num">50</td>
+          <td class="num">2</td>
+          <td class="num">148</td>
         </tr>
         
         <tr>
           <td>Tech Arch</td>
-          <td class="num">3</td>
-          <td class="num">259</td>
+          <td class="num">1</td>
+          <td class="num">67</td>
         </tr>
         
       </table>
@@ -131,21 +131,13 @@
         <tr>
           <td><span class="rank g2">2</span></td>
           <td>Steven Pugh</td>
-          <td>Tech Arch</td>
+          <td>DM</td>
           <td class="num">98</td>
           <td><div class="bar"><span style="width: 80%"></span></div></td>
         </tr>
         
         <tr>
           <td><span class="rank g3">3</span></td>
-          <td>Eve Jackson</td>
-          <td>Tech Arch</td>
-          <td class="num">94</td>
-          <td><div class="bar"><span style="width: 76%"></span></div></td>
-        </tr>
-        
-        <tr>
-          <td><span class="rank g">4</span></td>
           <td>Adam Johnson</td>
           <td>Developer</td>
           <td class="num">67</td>
@@ -153,7 +145,7 @@
         </tr>
         
         <tr>
-          <td><span class="rank g">5</span></td>
+          <td><span class="rank g">4</span></td>
           <td>Steve Holden</td>
           <td>Tech Arch</td>
           <td class="num">67</td>
@@ -161,8 +153,8 @@
         </tr>
         
         <tr>
-          <td><span class="rank g">6</span></td>
-          <td>Jill Smith</td>
+          <td><span class="rank g">5</span></td>
+          <td>Will Smith</td>
           <td>DM</td>
           <td class="num">50</td>
           <td><div class="bar"><span style="width: 41%"></span></div></td>
@@ -183,9 +175,9 @@
         </summary>
         <div class="facts">
           <div>Occupation<b>Developer</b></div>
-          <div>Rank<b>1 of 6</b></div>
+          <div>Rank<b>1 of 5</b></div>
           <div>Points<b>123</b></div>
-          <div>Share of total<b>24.6%</b></div>
+          <div>Share of total<b>30.4%</b></div>
           <div>Gap to leader<b>0</b></div>
         </div>
       </details>
@@ -197,10 +189,10 @@
           <span class="pts">98 pts</span>
         </summary>
         <div class="facts">
-          <div>Occupation<b>Tech Arch</b></div>
-          <div>Rank<b>2 of 6</b></div>
+          <div>Occupation<b>DM</b></div>
+          <div>Rank<b>2 of 5</b></div>
           <div>Points<b>98</b></div>
-          <div>Share of total<b>19.6%</b></div>
+          <div>Share of total<b>24.2%</b></div>
           <div>Gap to leader<b>25</b></div>
         </div>
       </details>
@@ -208,29 +200,29 @@
       <details>
         <summary>
           <span class="rank g3">3</span>
-          Eve Jackson
-          <span class="pts">94 pts</span>
+          Adam Johnson
+          <span class="pts">67 pts</span>
         </summary>
         <div class="facts">
-          <div>Occupation<b>Tech Arch</b></div>
-          <div>Rank<b>3 of 6</b></div>
-          <div>Points<b>94</b></div>
-          <div>Share of total<b>18.8%</b></div>
-          <div>Gap to leader<b>29</b></div>
+          <div>Occupation<b>Developer</b></div>
+          <div>Rank<b>3 of 5</b></div>
+          <div>Points<b>67</b></div>
+          <div>Share of total<b>16.5%</b></div>
+          <div>Gap to leader<b>56</b></div>
         </div>
       </details>
       
       <details>
         <summary>
           <span class="rank g">4</span>
-          Adam Johnson
+          Steve Holden
           <span class="pts">67 pts</span>
         </summary>
         <div class="facts">
-          <div>Occupation<b>Developer</b></div>
-          <div>Rank<b>4 of 6</b></div>
+          <div>Occupation<b>Tech Arch</b></div>
+          <div>Rank<b>4 of 5</b></div>
           <div>Points<b>67</b></div>
-          <div>Share of total<b>13.4%</b></div>
+          <div>Share of total<b>16.5%</b></div>
           <div>Gap to leader<b>56</b></div>
         </div>
       </details>
@@ -238,29 +230,14 @@
       <details>
         <summary>
           <span class="rank g">5</span>
-          Steve Holden
-          <span class="pts">67 pts</span>
-        </summary>
-        <div class="facts">
-          <div>Occupation<b>Tech Arch</b></div>
-          <div>Rank<b>5 of 6</b></div>
-          <div>Points<b>67</b></div>
-          <div>Share of total<b>13.4%</b></div>
-          <div>Gap to leader<b>56</b></div>
-        </div>
-      </details>
-      
-      <details>
-        <summary>
-          <span class="rank g">6</span>
-          Jill Smith
+          Will Smith
           <span class="pts">50 pts</span>
         </summary>
         <div class="facts">
           <div>Occupation<b>DM</b></div>
-          <div>Rank<b>6 of 6</b></div>
+          <div>Rank<b>5 of 5</b></div>
           <div>Points<b>50</b></div>
-          <div>Share of total<b>10.0%</b></div>
+          <div>Share of total<b>12.3%</b></div>
           <div>Gap to leader<b>73</b></div>
         </div>
       </details>
