@@ -158,6 +158,14 @@ def data_path(name):
     return child
 
 
+def list_templates(set_name):
+    """Names (without .html) of the templates in a set — the pages it can render."""
+    set_dir = sets_dir(set_name)
+    if set_dir is None:
+        return []
+    return sorted(p.stem for p in set_dir.glob("*.html"))
+
+
 # ---------------------------------------------------------------------------
 # Selection + data loading
 # ---------------------------------------------------------------------------
@@ -412,26 +420,40 @@ def resolve_target_set(existing, new_set):
 # Selection sidebar (injected on every page)
 # ---------------------------------------------------------------------------
 
-# Static HTML+CSS+JS; it fetches /selection.json to populate the two dropdowns and
-# posts /select on change. Collapsed by default. Classes are namespaced to avoid
-# colliding with the demo pages it is injected into.
+# Static HTML+CSS+JS injected into every page: a left drawer that slides in when
+# its tab is clicked. It fetches /selection.json to populate the set + data
+# dropdowns and the template links, and posts /select on change. The open state
+# is remembered so it survives navigating between template links. Classes are
+# namespaced to avoid colliding with the demo pages it is injected into.
 SIDEBAR_SNIPPET = """
 <div id="__edjas_sb" data-open="0">
-  <button type="button" id="__edjas_sb_toggle" title="Choose template set / data">&#10070; set &amp; data</button>
   <div id="__edjas_sb_panel">
-    <label>Template set<select id="__edjas_sb_set"></select></label>
-    <label>Data<select id="__edjas_sb_data"></select></label>
-    <div class="__edjas_sb_lnk"><a href="/upload/template">+ template</a> &middot; <a href="/upload/data">+ data</a></div>
+    <button type="button" id="__edjas_sb_toggle" title="Choose set, template, and data">&#10070;</button>
+    <div id="__edjas_sb_inner">
+      <h4>edjas demo</h4>
+      <label>Template set<select id="__edjas_sb_set"></select></label>
+      <div class="__edjas_sb_field"><span>Template</span><nav id="__edjas_sb_tpl"></nav></div>
+      <label>Data<select id="__edjas_sb_data"></select></label>
+      <div class="__edjas_sb_lnk"><a href="/upload/template">+ template</a> &middot; <a href="/upload/data">+ data</a></div>
+    </div>
   </div>
 </div>
 <style>
- #__edjas_sb { position: fixed; top: 12px; right: 12px; z-index: 2147483600; font: 13px/1.4 system-ui, sans-serif; }
- #__edjas_sb_toggle { border: 1px solid #d1d5db; background: #fff; color: #0f766e; font-weight: 600; padding: 0.3rem 0.6rem; border-radius: 8px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
- #__edjas_sb_panel { display: none; margin-top: 6px; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 0.7rem 0.8rem; width: 220px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
- #__edjas_sb[data-open="1"] #__edjas_sb_panel { display: block; }
- #__edjas_sb label { display: block; color: #6b7280; font-size: 0.8rem; margin-bottom: 0.5rem; }
- #__edjas_sb select { display: block; width: 100%; margin-top: 0.2rem; font: inherit; padding: 0.25rem; border: 1px solid #d1d5db; border-radius: 6px; }
- #__edjas_sb .__edjas_sb_lnk { font-size: 0.8rem; }
+ #__edjas_sb_panel { position: fixed; top: 0; left: 0; height: 100%; width: 230px; background: #fff; border-right: 1px solid #e5e7eb; box-shadow: 2px 0 16px rgba(0,0,0,0.10); transform: translateX(-100%); transition: transform 0.25s ease; z-index: 2147483600; font: 13px/1.4 system-ui, sans-serif; color: #1f2937; }
+ #__edjas_sb[data-open="1"] #__edjas_sb_panel { transform: translateX(0); }
+ body { transition: margin-left 0.25s ease; }
+ body.__edjas_sb_open { margin-left: 230px; }
+ #__edjas_sb_toggle { position: absolute; top: 12px; left: 100%; border: 1px solid #d1d5db; border-left: 0; background: #fff; color: #0f766e; font-weight: 600; font-size: 15px; line-height: 1; padding: 0.4rem 0.55rem; border-radius: 0 8px 8px 0; cursor: pointer; box-shadow: 2px 1px 4px rgba(0,0,0,0.08); }
+ #__edjas_sb_inner { padding: 1rem 0.95rem; height: 100%; overflow-y: auto; }
+ #__edjas_sb_inner h4 { margin: 0 0 0.9rem; font-size: 0.95rem; color: #0f766e; }
+ #__edjas_sb label, #__edjas_sb .__edjas_sb_field > span { display: block; color: #6b7280; font-size: 0.8rem; margin-bottom: 0.9rem; }
+ #__edjas_sb .__edjas_sb_field > span { margin-bottom: 0.35rem; }
+ #__edjas_sb select { display: block; width: 100%; margin-top: 0.25rem; font: inherit; padding: 0.3rem; border: 1px solid #d1d5db; border-radius: 6px; }
+ #__edjas_sb_tpl { display: flex; flex-direction: column; gap: 0.1rem; margin-bottom: 0.9rem; }
+ #__edjas_sb_tpl a { color: #0f766e; text-decoration: none; padding: 0.25rem 0.45rem; border-radius: 6px; }
+ #__edjas_sb_tpl a:hover { background: #f0fdfa; }
+ #__edjas_sb_tpl a.cur { background: #0f766e; color: #fff; font-weight: 600; }
+ #__edjas_sb .__edjas_sb_lnk { font-size: 0.8rem; margin-top: 0.4rem; }
  #__edjas_sb .__edjas_sb_lnk a { color: #0f766e; text-decoration: none; font-weight: 600; }
 </style>
 <script>
@@ -440,13 +462,36 @@ SIDEBAR_SNIPPET = """
    var root = document.getElementById('__edjas_sb');
    var toggle = document.getElementById('__edjas_sb_toggle');
    var setSel = document.getElementById('__edjas_sb_set');
+   var tplBox = document.getElementById('__edjas_sb_tpl');
    var dataSel = document.getElementById('__edjas_sb_data');
+   var KEY = '__edjas_sb_open';
+   function applyOpen(open) {
+     root.setAttribute('data-open', open ? '1' : '0');
+     document.body.classList.toggle('__edjas_sb_open', open);  // pushes page content right
+   }
+   var startOpen = false;
+   try { startOpen = localStorage.getItem(KEY) === '1'; } catch (e) {}
+   applyOpen(startOpen);
    toggle.addEventListener('click', function () {
-     root.setAttribute('data-open', root.getAttribute('data-open') === '1' ? '0' : '1');
+     var open = root.getAttribute('data-open') !== '1';
+     applyOpen(open);
+     try { localStorage.setItem(KEY, open ? '1' : '0'); } catch (e) {}
    });
    function opt(v, cur) { var o = document.createElement('option'); o.value = v; o.textContent = v; if (v === cur) o.selected = true; return o; }
+   function currentTemplate() {
+     if (location.pathname === '/') return 'index';
+     var m = location.pathname.match(/^\\/(.+)\\.html$/);
+     return m ? m[1] : null;  // null on non-template pages (e.g. /data, /upload/*)
+   }
    fetch('/selection.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (s) {
+     var curTpl = currentTemplate();
      (s.sets || []).forEach(function (v) { setSel.appendChild(opt(v, s.current_set)); });
+     (s.templates || []).forEach(function (v) {
+       var a = document.createElement('a');
+       a.href = '/' + v + '.html'; a.textContent = v;
+       if (v === curTpl) a.className = 'cur';
+       tplBox.appendChild(a);
+     });
      (s.data_files || []).forEach(function (v) { dataSel.appendChild(opt(v, s.current_data)); });
    }).catch(function () {});
    function choose(field, value) {
@@ -528,7 +573,12 @@ def selection_json():
     """The sets, data files, and current selection — used by the sidebar."""
     with _STATE_LOCK:
         current = {"current_set": CURRENT_SET, "current_data": CURRENT_DATA}
-    payload = {"sets": list_sets(), "data_files": list_data(), **current}
+    payload = {
+        "sets": list_sets(),
+        "templates": list_templates(current["current_set"]),
+        "data_files": list_data(),
+        **current,
+    }
     return Response(json.dumps(payload), mimetype="application/json")
 
 
