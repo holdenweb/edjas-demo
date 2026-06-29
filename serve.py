@@ -442,8 +442,8 @@ SIDEBAR_SNIPPET = """
 <style>
  #__edjas_sb_panel { position: fixed; top: 0; left: 0; height: 100%; width: 230px; background: #fff; border-right: 1px solid #e5e7eb; box-shadow: 2px 0 16px rgba(0,0,0,0.10); transform: translateX(-100%); transition: transform 0.25s ease; z-index: 2147483600; font: 13px/1.4 system-ui, sans-serif; color: #1f2937; }
  #__edjas_sb[data-open="1"] #__edjas_sb_panel { transform: translateX(0); }
- body { transition: margin-left 0.25s ease; }
- body.__edjas_sb_open { margin-left: 230px; }
+ body { margin-left: 15px; transition: margin-left 0.25s ease; }
+ body.__edjas_sb_open { margin-left: 245px; }
  #__edjas_sb_toggle { position: absolute; top: 12px; left: 100%; border: 1px solid #d1d5db; border-left: 0; background: #fff; color: #0f766e; font-weight: 600; font-size: 15px; line-height: 1; padding: 0.4rem 0.55rem; border-radius: 0 8px 8px 0; cursor: pointer; box-shadow: 2px 1px 4px rgba(0,0,0,0.08); }
  #__edjas_sb_inner { padding: 1rem 0.95rem; height: 100%; overflow-y: auto; }
  #__edjas_sb_inner h4 { margin: 0 0 0.9rem; font-size: 0.95rem; color: #0f766e; }
