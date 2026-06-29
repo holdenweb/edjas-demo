@@ -434,6 +434,7 @@ SIDEBAR_SNIPPET = """
       <label>Template set<select id="__edjas_sb_set"></select></label>
       <div class="__edjas_sb_field"><span>Template</span><nav id="__edjas_sb_tpl"></nav></div>
       <label>Data<select id="__edjas_sb_data"></select></label>
+      <div class="__edjas_sb_lnk"><a href="/data">Show the extracted data &#8599;</a></div>
       <div class="__edjas_sb_lnk"><a href="/upload/template">+ template</a> &middot; <a href="/upload/data">+ data</a></div>
     </div>
   </div>
